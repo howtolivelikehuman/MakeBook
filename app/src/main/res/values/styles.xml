@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 앱바 -->
+    <style name="Toolbar">
+        <item name="titleTextColor">@android:color/black</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="colorControlNormal">@android:color/black</item>
+    </style>
+</resources>
