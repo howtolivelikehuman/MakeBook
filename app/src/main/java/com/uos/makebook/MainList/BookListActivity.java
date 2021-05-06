@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uos.makebook.Common.BookDB;
+import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.DatabaseHelper;
 import com.uos.makebook.Edit.EditBookActivity;
 import com.uos.makebook.R;
@@ -27,7 +28,7 @@ public class BookListActivity extends AppCompatActivity{
     int mode = READ_MODE;
 
     //DB
-    BookDB bookDB;
+    DB bookDB;
 
     //GUI
     RecyclerView recyclerView;
@@ -44,9 +45,14 @@ public class BookListActivity extends AppCompatActivity{
 
         //DB setting
         bookDB = new BookDB(getApplicationContext());
-        for(int i=0; i<10; i++){
-            bookDB.insert(new Book(0,"나의책 " + i,null));
+
+        //값 없으면 dummy 넣기
+        if(bookDB.selectAll() == null){
+            for(int i=0; i<10; i++){
+                bookDB.insert(new Book(0,"나의책 " + i,null));
+            }
         }
+
 
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);

@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //안드로이드 권한
+        //안드로이드 권한 질의
         AutoPermissions.Companion.loadAllPermissions(this,101);
 
         setContentView(R.layout.activity_main);

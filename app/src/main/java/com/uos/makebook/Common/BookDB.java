@@ -12,7 +12,7 @@ import com.uos.makebook.MainList.Book;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class BookDB {
+public class BookDB implements DB{
 
     DatabaseHelper dbHelper;
     SQLiteDatabase database;
@@ -22,7 +22,8 @@ public class BookDB {
         database = dbHelper.getWritableDatabase();
     }
 
-    public long insert(Book book){
+    public long insert(DTO o){
+        Book book = (Book)o;
         DatabaseHelper.println("삽입");
         ContentValues val = new ContentValues();
 
@@ -42,10 +43,10 @@ public class BookDB {
         return database.delete(Constant.TABLE_NAME[0], selection, selectionArgs);
     }
 
-
-    public int update(Book book){
+    public int update(DTO o){
         DatabaseHelper.println("업데이트");
 
+        Book book = (Book)o;
         ContentValues val = new ContentValues();
         val.put(Constant.COLUMN_BOOKLIST[1], book.getName());
         val.put(Constant.COLUMN_BOOKLIST[2], getByteArrayFromDrawable(book.getCover()));
