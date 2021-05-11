@@ -80,6 +80,7 @@ public class BookDB implements DB{
         }
         else{
             DatabaseHelper.println("조회 결과가 없습니다.");
+            return null;
         }
         cursor.close();
         return books;
