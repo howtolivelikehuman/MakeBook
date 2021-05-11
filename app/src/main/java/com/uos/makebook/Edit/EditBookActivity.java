@@ -44,7 +44,7 @@ public class EditBookActivity  extends AppCompatActivity {
         //툴바 설정
         toolbar=findViewById(R.id.edit_toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(book_name);
+        getSupportActionBar().setTitle(book_name);
 
         //flipper 설정
         flipper = findViewById(R.id.flipper);
