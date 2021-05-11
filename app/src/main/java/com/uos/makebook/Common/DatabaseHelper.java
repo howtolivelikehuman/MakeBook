@@ -28,6 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         //샘플용 db
         sqLiteDatabase.execSQL(Constant.CREATE_TABLE_BOOKLIST);
+        sqLiteDatabase.execSQL(Constant.CREATE_TABLE_PAGE);
         println("onCreate 호출됨");
     }
 

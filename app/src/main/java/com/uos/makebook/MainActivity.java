@@ -16,7 +16,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         //안드로이드 권한 질의
         AutoPermissions.Companion.loadAllPermissions(this,101);
 
