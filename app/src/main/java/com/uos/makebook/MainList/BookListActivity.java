@@ -13,6 +13,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.uos.makebook.Common.BookDB;
+import com.uos.makebook.Common.DB;
+import com.uos.makebook.Common.DatabaseHelper;
 import com.uos.makebook.Edit.EditBookActivity;
 import com.uos.makebook.R;
 import com.uos.makebook.Read.ReadBookActivity;
@@ -22,8 +25,12 @@ public class BookListActivity extends AppCompatActivity{
     //읽기, 수정
     static final int READ_MODE = 0;
     static final int EDIT_MODE = 1;
-
     int mode = READ_MODE;
+
+    //DB
+    DB bookDB;
+
+    //GUI
     RecyclerView recyclerView;
     BookAdapter bookAdapter = new BookAdapter();
     Toolbar toolbar;
@@ -33,44 +40,28 @@ public class BookListActivity extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.mainlist_booklist);
+
+        //DB setting
+        bookDB = new BookDB(getApplicationContext());
+
+        //값 없으면 dummy 넣기
+        if(bookDB.selectAll() == null){
+            for(int i=0; i<10; i++){
+                bookDB.insert(new Book(0,"나의책 " + i,null));
+            }
+        }
+
 
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
 
-
-
         recyclerView = findViewById(R.id.recyBooklist);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         recyclerView.setLayoutManager(layoutManager);
-
-        //dummy data
-        bookAdapter.addItem(new Book(1,"나의책1",null));
-        bookAdapter.addItem(new Book(2,"나의책2",null));
-        bookAdapter.addItem(new Book(3,"나의책3",null));
-        bookAdapter.addItem(new Book(4,"나의책4",null));
-        bookAdapter.addItem(new Book(5,"나의책5",null));
-        bookAdapter.addItem(new Book(6,"나의책6",null));
-        bookAdapter.addItem(new Book(7,"나의책7",null));
-        bookAdapter.addItem(new Book(8,"나의책8",null));
-        bookAdapter.addItem(new Book(1,"나의책1",null));
-        bookAdapter.addItem(new Book(2,"나의책2",null));
-        bookAdapter.addItem(new Book(3,"나의책3",null));
-        bookAdapter.addItem(new Book(4,"나의책4",null));
-        bookAdapter.addItem(new Book(5,"나의책5",null));
-        bookAdapter.addItem(new Book(6,"나의책6",null));
-        bookAdapter.addItem(new Book(7,"나의책7",null));
-        bookAdapter.addItem(new Book(8,"나의책8",null));
-        bookAdapter.addItem(new Book(1,"나의책1",null));
-        bookAdapter.addItem(new Book(2,"나의책2",null));
-        bookAdapter.addItem(new Book(3,"나의책3",null));
-        bookAdapter.addItem(new Book(4,"나의책4",null));
-        bookAdapter.addItem(new Book(5,"나의책5",null));
-        bookAdapter.addItem(new Book(6,"나의책6",null));
-        bookAdapter.addItem(new Book(7,"나의책7",null));
-        bookAdapter.addItem(new Book(8,"나의책8",null));
 
         bookAdapter.setOnItemClickListener(new BookAdapter.OnItemClickListener() {
             @Override
@@ -97,6 +88,8 @@ public class BookListActivity extends AppCompatActivity{
                 return;
             }
         });
+        //DB에서 데이터 받아오기
+        bookAdapter.setItems(bookDB.selectAll());
         recyclerView.setAdapter(bookAdapter);
     }
 

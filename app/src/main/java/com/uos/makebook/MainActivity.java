@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.pedro.library.AutoPermissions;
 import com.uos.makebook.MainList.BookListActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +16,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //안드로이드 권한 질의
+        AutoPermissions.Companion.loadAllPermissions(this,101);
+
         setContentView(R.layout.activity_main);
 
         button = findViewById(R.id.buttonMainStart);

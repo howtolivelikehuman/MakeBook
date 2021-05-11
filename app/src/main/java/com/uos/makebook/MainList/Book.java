@@ -2,7 +2,9 @@ package com.uos.makebook.MainList;
 
 import android.graphics.Bitmap;
 
-public class Book {
+import com.uos.makebook.Common.DTO;
+
+public class Book implements DTO{
     int id;
     String name;
     Bitmap cover;
