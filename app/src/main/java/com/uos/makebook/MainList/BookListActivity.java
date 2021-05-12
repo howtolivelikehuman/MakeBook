@@ -57,7 +57,8 @@ public class BookListActivity extends AppCompatActivity{
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.app_name);
+        getSupportActionBar().setTitle(R.string.app_name);
+        // toolbar.setTitle(R.string.app_name); => 작동하지 않아요 (희은) 위의 코드로 교체!
 
         recyclerView = findViewById(R.id.recyBooklist);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);

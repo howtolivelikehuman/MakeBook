@@ -29,7 +29,7 @@ public class BookDB implements DB{
 
         //ID는 AUTO INCREMENT
         val.put(Constant.COLUMN_BOOKLIST[1], book.getName());
-        val.put(Constant.COLUMN_BOOKLIST[2], getByteArrayFromDrawable(book.getCover()));
+        val.put(Constant.COLUMN_BOOKLIST[2], Function.getByteArrayFromDrawable(book.getCover()));
 
         //insert시 PK return
         return database.insert(Constant.TABLE_NAME[0], null, val);
@@ -49,7 +49,7 @@ public class BookDB implements DB{
         Book book = (Book)o;
         ContentValues val = new ContentValues();
         val.put(Constant.COLUMN_BOOKLIST[1], book.getName());
-        val.put(Constant.COLUMN_BOOKLIST[2], getByteArrayFromDrawable(book.getCover()));
+        val.put(Constant.COLUMN_BOOKLIST[2], Function.getByteArrayFromDrawable(book.getCover()));
 
         String whereClause = Constant.COLUMN_BOOKLIST[0] + " =";
         String[] whereArgs = {String.valueOf(book.getId())};
@@ -74,7 +74,7 @@ public class BookDB implements DB{
                 //그냥 하드코딩해도됨
                 b.setId(cursor.getInt(0));
                 b.setName(cursor.getString(1));
-                b.setCover(getBitmapFromByteArray(cursor.getBlob(2)));
+                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(2)));
                 books.add(b);
             }
         }
@@ -107,7 +107,7 @@ public class BookDB implements DB{
                 //그냥 하드코딩해도됨
                 b.setId(cursor.getInt(0));
                 b.setName(cursor.getString(1));
-                b.setCover(getBitmapFromByteArray(cursor.getBlob(2)));
+                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(2)));
                 books.add(b);
             }
         }
@@ -116,36 +116,5 @@ public class BookDB implements DB{
         }
         cursor.close();
         return books;
-    }
-
-    //Bitmap -> Byte
-    public byte[] getByteArrayFromDrawable(Bitmap d){
-        if(d != null){
-            //if drawable
-            //Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
-            Bitmap bitmap = d;
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-
-            byte[] data = stream.toByteArray();
-            return data;
-        }
-        else{
-            DatabaseHelper.println("사진파일이 없음");
-            return null;
-        }
-    }
-    //Byte -> Bitmap
-    public Bitmap getBitmapFromByteArray(byte[] bytes){
-        Bitmap bit;
-
-        if(bytes != null){
-            bit = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-            return bit;
-        }
-        else{
-            DatabaseHelper.println("사진파일 X");
-            return null;
-        }
     }
 }

@@ -3,6 +3,9 @@ package com.uos.makebook.MainList;
 import android.graphics.Bitmap;
 
 import com.uos.makebook.Common.DTO;
+import com.uos.makebook.Edit.Page;
+
+import java.util.List;
 
 public class Book implements DTO{
     int id;
