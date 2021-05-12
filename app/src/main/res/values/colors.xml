@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#f14848</color>
+    <color name="seekBar">#45526C</color>
 </resources>

@@ -29,8 +29,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Book item = bookItems.get(position);
-        holder.setItem(item);
+        if(position == 0){
+            holder.setFirstItem();
+        }else{
+            Book item = bookItems.get(position);
+            holder.setItem(item);
+        }
     }
 
     @Override
@@ -39,6 +43,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     }
     public void addItem(Book item) { bookItems.add(item); }
     public void setItems(ArrayList<Book> personItems){
+        //만들기용 책
+        personItems.add(0,new Book());
         this.bookItems=personItems;
     }
     public Book getItem(int position){
@@ -80,7 +86,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     }
                 }
             });
-
             text_name = itemView.findViewById(R.id.textViewBookTitle);
             image_cover = itemView.findViewById(R.id.imageBookcover);
         }
@@ -94,6 +99,18 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                     .placeholder(R.drawable.default_cover)
                     .error(R.drawable.default_cover)
                     .fallback(R.drawable.default_cover)
+                    .into(image_cover);
+        }
+
+        public void setFirstItem(){
+            text_name.setText("만들기");
+            //더하기사진
+            Glide.with(itemView)
+                    .load(R.drawable.plus)
+                    .fitCenter()
+                    .placeholder(R.drawable.plus)
+                    .error(R.drawable.plus)
+                    .fallback(R.drawable.plus)
                     .into(image_cover);
         }
     }
