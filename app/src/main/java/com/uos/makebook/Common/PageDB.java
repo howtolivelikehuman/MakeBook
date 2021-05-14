@@ -25,9 +25,9 @@ public class PageDB implements DB{
 
         //ID는 AUTO INCREMENT
         val.put(Constant.COLUMN_PAGE[1], page.getBookId());
-        val.put(Constant.COLUMN_PAGE[2], page.getIdx());
-        val.put(Constant.COLUMN_PAGE[3], page.getText());
-        val.put(Constant.COLUMN_PAGE[4], Function.getByteArrayFromDrawable(page.getImg()));
+        val.put(Constant.COLUMN_PAGE[2], page.getText());
+        val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
+        val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
 
         //insert시 PK return
         return database.insert(Constant.TABLE_NAME[1], null, val);
@@ -42,48 +42,67 @@ public class PageDB implements DB{
     }
 
     public int update(DTO o) {
-        DatabaseHelper.println("page 업데이트");
-
         Page page = (Page) o;
+        DatabaseHelper.println("page 업데이트");
         ContentValues val = new ContentValues();
-        val.put(Constant.COLUMN_PAGE[1], page.getIdx());
+        System.out.println(page.getBookId());
+        System.out.println(page.getText());
+        System.out.println(page.getImg());
+        System.out.println(page.getNextPage());
+        System.out.println(page.getId());
+
         val.put(Constant.COLUMN_PAGE[2], page.getText());
         val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
+        val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
 
-        String whereClause = Constant.COLUMN_PAGE[0] + " =";
-        String[] whereArgs = {String.valueOf(page.getId())};
+        String whereClause = Constant.COLUMN_PAGE[0] + "=?";
+        String[] whereArgs = {Long.toString(page.getId())};
 
         //update 된 수 return
         return database.update(Constant.TABLE_NAME[1], val, whereClause, whereArgs);
     }
 
+    private Page makePage(Cursor cursor){
+        Page p;
+        p = new Page();
+        //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
+        //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
+        //그냥 하드코딩해도됨
+        p.setId(cursor.getLong(0));
+        p.setBookId(cursor.getLong(1));
+        p.setText(cursor.getString(2));
+        p.setImg(Function.getBitmapFromByteArray(cursor.getBlob(3)));
+        p.setNextPage(cursor.getLong(4));
+        return p;
+    }
+
     public ArrayList<Page> selectAll(){
         DatabaseHelper.println("page 전체 조회");
         ArrayList<Page> pages = new ArrayList<Page>();
+
         Cursor cursor = database.query(Constant.TABLE_NAME[1], null, null, null, null, null, null);
+        try {
+            //1개 이상이면
+            if (cursor.getCount() > 1) { // 1번 페이지는 안 씀! (head로 사용)
+                cursor.moveToNext();
+                long next_page = cursor.getLong(4);
+                while (next_page != 0) {
+                    if(cursor.moveToNext())
+                        break;
+                    String selection = Constant.COLUMN_PAGE[0] + " LIKE ?";
+                    String[] selectionArgs = {"%" + next_page + "%"};
+                    cursor = database.query(Constant.TABLE_NAME[1], null, selection, selectionArgs, null, null, null);
 
-        //1개 이상이면
-        if(cursor.getCount() > 0){
-            Page p;
-
-            while(cursor.moveToNext()){
-                p = new Page();
-                //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
-                //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
-                //그냥 하드코딩해도됨
-                p.setId(cursor.getInt(0));
-                p.setBookId(cursor.getInt(1));
-                p.setIdx(cursor.getInt(2));
-                p.setText(cursor.getString(3));
-                p.setImg(Function.getBitmapFromByteArray(cursor.getBlob(4)));
-                pages.add(p);
+                    pages.add(makePage(cursor));
+                    next_page = cursor.getLong(4);
+                }
+            } else {
+                DatabaseHelper.println("조회 결과가 없습니다.");
+                return null;
             }
+        }finally {
+            cursor.close();
         }
-        else{
-            DatabaseHelper.println("조회 결과가 없습니다.");
-            return null;
-        }
-        cursor.close();
         return pages;
     }
 
@@ -100,18 +119,9 @@ public class PageDB implements DB{
         //1개 이상이면
         if(cursor.getCount() > 0){
             Page p;
-
+            cursor.moveToNext(); // 첫 페이지는 head
             while(cursor.moveToNext()){
-                p = new Page();
-                //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
-                //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
-                //그냥 하드코딩해도됨
-                p.setId(cursor.getInt(0));
-                p.setBookId(cursor.getInt(1));
-                p.setIdx(cursor.getInt(2));
-                p.setText(cursor.getString(3));
-                p.setImg(Function.getBitmapFromByteArray(cursor.getBlob(4)));
-                pages.add(p);
+                pages.add(makePage(cursor));
             }
         }
         else{
