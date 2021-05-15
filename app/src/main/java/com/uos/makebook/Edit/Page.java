@@ -9,15 +9,17 @@ public class Page implements DTO {
     long book_id;
     String text;
     Bitmap img;
-    long nextPage; // idx를 넣는 대신 자체 참조 속성을 넣어서 다음 페이지를 가리키게 함
+    long nextPage; // 연결리스트
+    int isHead; // head node 인지 판별
 
     public Page(){}
 
-    public Page(long book_id, String text, Bitmap img, long nextPage) {
+    public Page(long book_id, String text, Bitmap img, long nextPage, int isHead) {
         this.book_id = book_id;
         this.text = text;
         this.img = img;
         this.nextPage = nextPage;
+        this.isHead = isHead;
     }
 
     public long getId() { return id; }
@@ -52,6 +54,14 @@ public class Page implements DTO {
 
     public void setNextPage(long nextPage) {
         this.nextPage = nextPage;
+    }
+
+    public int getIsHead() {
+        return isHead;
+    }
+
+    public void setIsHead(int isHead) {
+        this.isHead = isHead;
     }
 
 }

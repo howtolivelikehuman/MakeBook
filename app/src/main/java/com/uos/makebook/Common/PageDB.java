@@ -22,12 +22,14 @@ public class PageDB implements DB{
         Page page = (Page)o;
         DatabaseHelper.println("page 삽입");
         ContentValues val = new ContentValues();
+        System.out.println(page.getIsHead());
 
         //ID는 AUTO INCREMENT
         val.put(Constant.COLUMN_PAGE[1], page.getBookId());
         val.put(Constant.COLUMN_PAGE[2], page.getText());
         val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
         val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
+        val.put(Constant.COLUMN_PAGE[5], page.getIsHead());
 
         //insert시 PK return
         return database.insert(Constant.TABLE_NAME[1], null, val);
@@ -45,15 +47,11 @@ public class PageDB implements DB{
         Page page = (Page) o;
         DatabaseHelper.println("page 업데이트");
         ContentValues val = new ContentValues();
-        System.out.println(page.getBookId());
-        System.out.println(page.getText());
-        System.out.println(page.getImg());
-        System.out.println(page.getNextPage());
-        System.out.println(page.getId());
 
         val.put(Constant.COLUMN_PAGE[2], page.getText());
         val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
         val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
+        val.put(Constant.COLUMN_PAGE[5], page.getIsHead());
 
         String whereClause = Constant.COLUMN_PAGE[0] + "=?";
         String[] whereArgs = {Long.toString(page.getId())};
@@ -73,6 +71,7 @@ public class PageDB implements DB{
         p.setText(cursor.getString(2));
         p.setImg(Function.getBitmapFromByteArray(cursor.getBlob(3)));
         p.setNextPage(cursor.getLong(4));
+        p.setIsHead(cursor.getInt(5));
         return p;
     }
 
@@ -119,7 +118,6 @@ public class PageDB implements DB{
         //1개 이상이면
         if(cursor.getCount() > 0){
             Page p;
-            cursor.moveToNext(); // 첫 페이지는 head
             while(cursor.moveToNext()){
                 pages.add(makePage(cursor));
             }
@@ -131,4 +129,40 @@ public class PageDB implements DB{
         return pages;
     }
 
+    @Override
+    public ArrayList<Page> select(String[] column, String[] data){
+        DatabaseHelper.println("page 조회");
+
+        ArrayList<Page> pages = new ArrayList<Page>();
+
+        if(column.length != data.length){
+            System.out.println("넘어온 인자의 개수가 다릅니다.");
+            return pages;
+        }
+
+        String query = "SELECT * FROM " + Constant.TABLE_NAME[1] + " WHERE ";
+        for(int i=0; i<column.length; i++){
+            query += (column[i]+"=?");
+            if(i!=column.length-1){
+                query += " AND ";
+            }
+        }
+
+        System.out.println(query);
+
+        Cursor cursor = database.rawQuery(query, data);
+
+        //1개 이상이면
+        if(cursor.getCount() > 0){
+            Page p;
+            while(cursor.moveToNext()){
+                pages.add(makePage(cursor));
+            }
+        }
+        else{
+            DatabaseHelper.println("조회 결과가 없습니다.");
+        }
+        cursor.close();
+        return pages;
+    }
 }

@@ -8,7 +8,7 @@ public class Constant {
     public static final String DATABASE_NAME = "MAKEBOOK";
     public static final String[] TABLE_NAME = {"BOOKLIST", "PAGE"};
     public static final String[] COLUMN_BOOKLIST = {"ID", "NAME", "IMAGE"};
-    public static final String[] COLUMN_PAGE = {"ID", "BOOKID", "TEXT", "IMAGE", "NEXTPAGE"};
+    public static final String[] COLUMN_PAGE = {"ID", "BOOKID", "TEXT", "IMAGE", "NEXTPAGE", "ISHEAD"};
 
     //책 테이블 생성
     public static final String CREATE_TABLE_BOOKLIST = "CREATE TABLE " + TABLE_NAME[0] + "(" +
@@ -22,6 +22,7 @@ public class Constant {
             COLUMN_PAGE[2] + " TEXT, " +
             COLUMN_PAGE[3] + " BLOB, " +
             COLUMN_PAGE[4] + " INTEGER, " +
+            COLUMN_PAGE[5] + " INTEGER, " +
             "FOREIGN KEY " + "(" + COLUMN_PAGE[1] + ") " +
             "REFERENCES " + TABLE_NAME[0] + "(" + COLUMN_BOOKLIST[0] + ")" +
             "FOREIGN KEY " + "(" + COLUMN_PAGE[4] + ") " +
