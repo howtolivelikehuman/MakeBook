@@ -247,9 +247,16 @@ public class EditBookActivity  extends AppCompatActivity {
     }
 
     private void removePageFromDB(){
+        Page prevPage;
+        if(page_idx==0){
+            prevPage=getHead();
+        }else {
+            prevPage=pageList.get(page_idx-1);
+        }
         Page deletePage = pageList.get(page_idx);
+        prevPage.nextPage = deletePage.nextPage;
+        pageDB.update(prevPage);
         int num = pageDB.delete((int)deletePage.getId()); // pk long으로 통일하면 안될까욤?-? (희은)
-        System.out.println(num);
 
         getPageListFromDB();
     }
