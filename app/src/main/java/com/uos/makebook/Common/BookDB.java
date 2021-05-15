@@ -25,7 +25,7 @@ public class BookDB implements DB {
 
     public long insert(DTO o) {
         Book book = (Book) o;
-        DatabaseHelper.println("삽입");
+        DatabaseHelper.println("Book 삽입");
         ContentValues val = new ContentValues();
 
         //ID는 AUTO INCREMENT
@@ -37,7 +37,7 @@ public class BookDB implements DB {
     }
 
     public int delete(int pk) {
-        DatabaseHelper.println("삭제");
+        DatabaseHelper.println("Book 삭제");
         String selection = Constant.COLUMN_BOOKLIST[0] + " LIKE ?";
         String[] selectionArgs = {Integer.toString(pk)};
         //delete 된 수 return
@@ -45,7 +45,7 @@ public class BookDB implements DB {
     }
 
     public int update(DTO o) {
-        DatabaseHelper.println("업데이트");
+        DatabaseHelper.println("Book 업데이트");
 
         Book book = (Book) o;
         ContentValues val = new ContentValues();
@@ -60,7 +60,7 @@ public class BookDB implements DB {
     }
 
     public ArrayList<Book> selectAll() {
-        DatabaseHelper.println("전체 조회");
+        DatabaseHelper.println("Book 전체 조회");
         ArrayList<Book> books = new ArrayList<Book>();
         Cursor cursor = database.query(Constant.TABLE_NAME[0], null, null, null, null, null, null);
 
@@ -86,20 +86,29 @@ public class BookDB implements DB {
         return books;
     }
 
-    //column에 해당하는 data로 찾기
-    public ArrayList<Book> select(String column, String data) {
-        DatabaseHelper.println("조회");
-
+    public ArrayList<Book> select(String[] column, String[] data){ // 여러 조건을 사용할 수 있는 select문
+        DatabaseHelper.println("Book 조회");
         ArrayList<Book> books = new ArrayList<Book>();
-        String selection = column + " LIKE ?";
-        String[] selectionArgs = {"%" + data + "%"};
 
-        Cursor cursor = database.query(Constant.TABLE_NAME[0], null, selection, selectionArgs, null, null, null);
+        if(column.length != data.length){
+            System.out.println("넘어온 인자의 개수가 다릅니다.");
+            return books;
+        }
+
+        String query = "SELECT * FROM " + Constant.TABLE_NAME[0] + " WHERE ";
+        for(int i=0; i<column.length; i++){
+            query += (column[i]+"=?");
+            if(i!=column.length-1){
+                query += " AND ";
+            }
+        }
+        System.out.println(query);
+
+        Cursor cursor = database.rawQuery(query, data);
 
         //1개 이상이면
-        if (cursor.getCount() > 0) {
+        if(cursor.getCount() > 0){
             Book b;
-
             while (cursor.moveToNext()) {
                 b = new Book();
                 //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
@@ -110,15 +119,11 @@ public class BookDB implements DB {
                 b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(2)));
                 books.add(b);
             }
-        } else {
+        }
+        else{
             DatabaseHelper.println("조회 결과가 없습니다.");
         }
         cursor.close();
-        return books;
-    }
-
-    public ArrayList<Book> select(String[] column, String[] data){
-        ArrayList<Book> books = new ArrayList<Book>();
         return books;
     }
 }

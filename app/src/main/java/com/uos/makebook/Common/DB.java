@@ -12,7 +12,5 @@ public interface DB<T>{
     int delete(int pk);
     int update(DTO o);
     ArrayList<T> selectAll();
-    ArrayList<T> select(String column, String data);
-
     ArrayList<T> select(String[] column, String[] data);
 }

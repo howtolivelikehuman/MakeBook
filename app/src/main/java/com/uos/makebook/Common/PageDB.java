@@ -105,31 +105,6 @@ public class PageDB implements DB{
         return pages;
     }
 
-    //column에 해당하는 data로 찾기
-    public ArrayList<Page> select(String column, String data){
-        DatabaseHelper.println("page 조회");
-
-        ArrayList<Page> pages = new ArrayList<Page>();
-        String selection  = column + " LIKE ?";
-        String[] selectionArgs = {"%" + data + "%"};
-
-        Cursor cursor = database.query(Constant.TABLE_NAME[1], null, selection, selectionArgs, null, null, null);
-
-        //1개 이상이면
-        if(cursor.getCount() > 0){
-            Page p;
-            while(cursor.moveToNext()){
-                pages.add(makePage(cursor));
-            }
-        }
-        else{
-            DatabaseHelper.println("조회 결과가 없습니다.");
-        }
-        cursor.close();
-        return pages;
-    }
-
-    @Override
     public ArrayList<Page> select(String[] column, String[] data){
         DatabaseHelper.println("page 조회");
 
@@ -147,7 +122,6 @@ public class PageDB implements DB{
                 query += " AND ";
             }
         }
-
         System.out.println(query);
 
         Cursor cursor = database.rawQuery(query, data);
