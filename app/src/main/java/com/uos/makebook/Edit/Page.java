@@ -5,37 +5,33 @@ import android.graphics.Bitmap;
 import com.uos.makebook.Common.DTO;
 
 public class Page implements DTO {
-    int id = 0; // 어차피 insert 시에는 auto_increment
-    int book_id;
-    int idx;
+    long id = 0; // 어차피 insert 시에는 auto_increment
+    long book_id;
     String text;
     Bitmap img;
+    long nextPage; // 연결리스트
+    int isHead; // head node 인지 판별
 
     public Page(){}
 
-    public Page(int book_id, int idx, String text, Bitmap img) {
+    public Page(long book_id, String text, Bitmap img, long nextPage, int isHead) {
         this.book_id = book_id;
-        this.idx = idx;
         this.text = text;
         this.img = img;
+        this.nextPage = nextPage;
+        this.isHead = isHead;
     }
 
-    public int getId() { return id; }
+    public long getId() { return id; }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getBookId() { return book_id; }
+    public long getBookId() { return book_id; }
 
-    public void setBookId(int id) {
+    public void setBookId(long id) {
         this.book_id = id;
-    }
-
-    public int getIdx() { return idx; }
-
-    public void setIdx(int idx) {
-        this.idx = idx;
     }
 
     public String getText() { return text; }
@@ -51,5 +47,22 @@ public class Page implements DTO {
     public void setImg(Bitmap cover) {
         this.img = img;
     }
+
+    public long getNextPage() {
+        return nextPage;
+    }
+
+    public void setNextPage(long nextPage) {
+        this.nextPage = nextPage;
+    }
+
+    public int getIsHead() {
+        return isHead;
+    }
+
+    public void setIsHead(int isHead) {
+        this.isHead = isHead;
+    }
+
 }
 

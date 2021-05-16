@@ -14,11 +14,13 @@ import android.widget.ViewFlipper;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.MainList.Book;
 import com.uos.makebook.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
@@ -26,10 +28,9 @@ import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
 public class EditBookActivity  extends AppCompatActivity {
 
     int page_idx = 0; // 현재 보고있는 페이지
-    int page_number; // 페이지 개수
 
     //book
-    int book_id;
+    long book_id;
     String book_name;
 
     //DB
@@ -52,13 +53,6 @@ public class EditBookActivity  extends AppCompatActivity {
         //DB setting
         pageDB = new PageDB(getApplicationContext());
 
-        //값 없으면 dummy 넣기
-        if(pageDB.selectAll() == null){
-            for(int i=0; i<10; i++){
-                pageDB.insert(new Page(i, 0,Integer.toString(i),null));
-            }
-        }
-
         //인텐트로 값 받아오기
         Intent editIntent = getIntent();
         book_id = editIntent.getIntExtra("Id", -1);
@@ -71,18 +65,19 @@ public class EditBookActivity  extends AppCompatActivity {
 
         //flipper 설정
         flipper = findViewById(R.id.flipper);
-        getBookListFromDB();
         prev_button = findViewById(R.id.btn_previous);
         next_button = findViewById(R.id.btn_next);
-        page_number = flipper.getChildCount();
-        setButtonEnable();
+
+        // DB로부터 값 받아오기
+        setPageList();
+        updateButtonState();
 
         // 이전 버튼
         prev_button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
                 flipper.showPrevious();
                 page_idx--;
-                setButtonEnable();
+                updateButtonState();
             }
         });
 
@@ -91,7 +86,7 @@ public class EditBookActivity  extends AppCompatActivity {
             public void onClick(View view){
                 flipper.showNext();
                 page_idx++;
-                setButtonEnable();
+                updateButtonState();
             }
         });
 
@@ -105,33 +100,34 @@ public class EditBookActivity  extends AppCompatActivity {
         return true;
     }
 
-    // todo : DB와 연동해서 page 추가 삭제 하기
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
-            case R.id.action_create :
+            case R.id.action_create_prev :
                 // 페이지 추가
                 System.out.println("페이지 추가");
-                View PageView = View.inflate(this, R.layout.edit_editbook_page, null);
-                page_number++;
-                addPageFromDB(new Page(book_id, page_idx,"생성2", null));
-                System.out.println(page_idx);
-                setButtonEnable();
+                addPageBeforeIdx();
+                updateButtonState();
+                Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_create_next :
+                // 페이지 추가
+                System.out.println("페이지 추가");
+                addPageAfterIdx();
+                updateButtonState();
                 Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_delete :
                 // 페이지 삭제
                 System.out.println("페이지 삭제");
-                if(page_number == 1){
+                if(pageList.size() == 1){
                     // 한 페이지만 남은 경우에는 삭제 안 됨
                     Toast.makeText(getApplicationContext(),"적어도 한 페이지는 있어야 합니다.", Toast.LENGTH_LONG).show();
                     return false;
                 }
-                removePageFromDB(pageList.get(page_idx).id);
-                page_idx--;
-                page_number--;
-                setButtonEnable();
+                removePageFromDB();
+                updateButtonState();
                 Toast.makeText(getApplicationContext(),"페이지 삭제", Toast.LENGTH_LONG).show();
                 return true;
             default:
@@ -139,9 +135,77 @@ public class EditBookActivity  extends AppCompatActivity {
         }
     }
 
-    public void getBookListFromDB(){
+    private void setPageList(){
+        System.out.println("setPageList");
+
+        getPageListFromDB();
+
+        if(pageList.size()==0){ // page 없으면 추가 후 다시 받아오기
+            initialize();
+            getPageListFromDB();
+        }
+        pageList.remove(0); // head 제거
+
+        sortPageList(); // page 순서 정하기
+        makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
+    }
+
+    private void initialize(){ // head와 첫 페이지 추가
+        System.out.println("initialize");
+
+        Page head = new Page(book_id, "0",null,0, 1);
+        Page firstPage = new Page(book_id, "1",null,0, 0);
+        long head_pk = pageDB.insert(head); head.setId(head_pk);
+        long first_pk = pageDB.insert(firstPage);
+        head.setNextPage(first_pk);
+        pageDB.update(head);
+    }
+
+    private void getPageListFromDB(){ // book_id에 해당하는 모든 page 가져오기
+        String[] selection = {COLUMN_PAGE[1]};
+        String[] selectionArgs = {Long.toString(book_id)};
+        pageList = pageDB.select(selection, selectionArgs);
+    }
+
+    private void sortPageList(){
+        System.out.println("sortPageList");
+        ArrayList<Page> sortedPageList = new ArrayList<Page>();
+
+        Page head = getHead();
+        if(head == null)
+            return;
+        long nextPage = head.nextPage;
+
+        while(nextPage != 0 && !pageList.isEmpty()){ // nextPage 따라가면서 pageList 정렬
+            for(int i=0; i<pageList.size(); i++){
+                if(pageList.get(i).id != nextPage)
+                    continue;
+                sortedPageList.add(pageList.get(i));
+                nextPage = pageList.get(i).nextPage;
+                pageList.remove(i);
+                break;
+            }
+        }
+
+        pageList = sortedPageList;
+    }
+
+    private Page getHead(){
+        String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[5]};
+        String[] selectionArgs = {Long.toString(book_id), Integer.toString(1)};
+
+        ArrayList<Page> headList = pageDB.select(selection, selectionArgs); // head 데려오기
+        if(headList.size() == 0) {
+            System.out.println("Head가 없습니다.");
+            return null;
+        }
+        return headList.get(0);
+    }
+
+    private void makeFlipperByPageList(){
+        System.out.println("makeFlipperByPageList");
+
         flipper.removeAllViews();
-        pageList = pageDB.select(COLUMN_PAGE[1], Integer.toString(book_id));
         for(int i=0; i<pageList.size(); i++){
             Page pageTemp = pageList.get(i);
             View PageView = View.inflate(this, R.layout.edit_editbook_page, null);
@@ -150,31 +214,86 @@ public class EditBookActivity  extends AppCompatActivity {
             text.setText(pageTemp.text);
             flipper.addView(PageView);
         };
-        for(int i=0; i<page_idx; i++) {
+
+        for(int i=0; i<page_idx; i++) { // 원래 보던 위치로 되돌려놓기
             flipper.showNext();
         }
     }
 
-    public void addPageFromDB(Page page){
-        pageDB.insert(page);
-        getBookListFromDB();
-    }
-    public void removePageFromDB(int pk){
-        pageDB.delete(pk);
-        getBookListFromDB();
+    private void addPageBeforeIdx(){ // 이전 페이지 추가
+        System.out.println("EditBookActivity.addPageBeforeIdx");
+        Page current_page, new_page;
+        if(page_idx == 0){ // 첫 장 추가 시
+            current_page = getHead();
+            if(current_page == null)
+                return;
+        }else{
+            current_page = pageList.get(page_idx-1);
+        }
+        new_page = new Page(book_id, "생성", null, 0, 0);
+        new_page.setNextPage(current_page.nextPage);
+        long pk = pageDB.insert(new_page); // 새 페이지 삽입
+
+        current_page.setNextPage(pk);
+        pageDB.update(current_page); // 기존 페이지 업데이트
+
+        setPageList();
+        System.out.println(page_idx);
     }
 
-    public void setButtonEnable(){
-        if(page_number == 0 || page_number == 1){
-            next_button.setEnabled(true);
-            next_button.setEnabled(false);
+    private void addPageAfterIdx(){ // 다음 페이지 추가
+        System.out.println("EditBookActivity.addPageAfterIdx");
+        Page current_page, new_page;
+        new_page = new Page(book_id, "생성", null, 0, 0);
+        current_page = pageList.get(page_idx);
+        new_page.setNextPage(current_page.nextPage);
+        long pk = pageDB.insert(new_page); // 새 페이지 삽입
+
+        current_page.setNextPage(pk);
+        pageDB.update(current_page); // 기존 페이지 업데이트
+
+        setPageList();
+        System.out.println(page_idx);
+    }
+
+    private void removePageFromDB(){
+        System.out.println("EditBookActivity.removePageFromDB");
+        Page prevPage;
+        if(page_idx==0){
+            prevPage=getHead();
+            if(prevPage == null)
+                return;
+        }else {
+            prevPage=pageList.get(page_idx-1);
         }
+        Page deletePage = pageList.get(page_idx);
+        prevPage.nextPage = deletePage.nextPage;
+        pageDB.update(prevPage);
+        int num = pageDB.delete((int)deletePage.getId()); // pk long으로 통일하면 안될까욤?-? (희은)
+
+        setPageList();
+        if(page_idx == pageList.size()){
+            page_idx--;
+        }
+    }
+
+    private void updateButtonState(){
+        System.out.println("updateButtonState");
+        // 이전, 다음 버튼 상태 update
+        int page_number = pageList.size();
+        if(page_number == 0 || page_number == 1) {
+            next_button.setEnabled(false);
+            prev_button.setEnabled(false);
+            return;
+        }
+
         if(page_idx == page_number-1){
             // 마지막 페이지이면 다음 버튼 비활성화
             next_button.setEnabled(false);
         }else{
             next_button.setEnabled(true);
         }
+
         if(page_idx == 0){
             prev_button.setEnabled(false);
         }else{
