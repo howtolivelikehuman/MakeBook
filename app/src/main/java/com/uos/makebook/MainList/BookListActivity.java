@@ -17,6 +17,7 @@ import com.uos.makebook.Common.BookDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Page.EditBookActivity;
+import com.uos.makebook.Common.DatabaseHelper;
 import com.uos.makebook.R;
 import com.uos.makebook.Page.ReadBookActivity;
 import com.uos.makebook.Make.MakeCoverActivity;
