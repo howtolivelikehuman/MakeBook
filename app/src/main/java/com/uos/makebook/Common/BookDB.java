@@ -4,13 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import com.uos.makebook.Edit.Page;
 import com.uos.makebook.MainList.Book;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class BookDB implements DB {

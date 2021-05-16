@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.uos.makebook.Common.BookDB;
 import com.uos.makebook.Common.DB;
-import com.uos.makebook.Common.DatabaseHelper;
-import com.uos.makebook.Edit.EditBookActivity;
+import com.uos.makebook.Page.EditBookActivity;
 import com.uos.makebook.R;
-import com.uos.makebook.Read.ReadBookActivity;
+import com.uos.makebook.Page.ReadBookActivity;
 
 
 public class BookListActivity extends AppCompatActivity{

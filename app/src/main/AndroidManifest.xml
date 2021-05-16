@@ -23,8 +23,8 @@
         </activity>
 
         <activity android:name=".MainList.BookListActivity"/>
-        <activity android:name=".Edit.EditBookActivity"/>
-        <activity android:name=".Read.ReadBookActivity"/>
+        <activity android:name=".Page.EditBookActivity"/>
+        <activity android:name=".Page.ReadBookActivity"/>
     </application>
 
 </manifest>

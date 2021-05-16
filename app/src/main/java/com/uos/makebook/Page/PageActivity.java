@@ -1,32 +1,25 @@
-package com.uos.makebook.Edit;
+package com.uos.makebook.Page;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.PageDB;
-import com.uos.makebook.MainList.Book;
 import com.uos.makebook.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
 
-public class EditBookActivity  extends AppCompatActivity {
-
+public class PageActivity extends AppCompatActivity {
     int page_idx = 0; // 현재 보고있는 페이지
 
     //book
@@ -45,10 +38,12 @@ public class EditBookActivity  extends AppCompatActivity {
 
     ArrayList<Page> pageList;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("EditBookActivity.onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_editbook);
+        setContentView(R.layout.page_bookpage);
 
         //DB setting
         pageDB = new PageDB(getApplicationContext());
@@ -59,7 +54,7 @@ public class EditBookActivity  extends AppCompatActivity {
         book_name = editIntent.getStringExtra("Name");
 
         //툴바 설정
-        toolbar=findViewById(R.id.edit_toolbar);
+        toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(book_name);
 
@@ -89,53 +84,9 @@ public class EditBookActivity  extends AppCompatActivity {
                 updateButtonState();
             }
         });
-
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        // edit menu 연결
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.editbook_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId())
-        {
-            case R.id.action_create_prev :
-                // 페이지 추가
-                System.out.println("페이지 추가");
-                addPageBeforeIdx();
-                updateButtonState();
-                Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_create_next :
-                // 페이지 추가
-                System.out.println("페이지 추가");
-                addPageAfterIdx();
-                updateButtonState();
-                Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.action_delete :
-                // 페이지 삭제
-                System.out.println("페이지 삭제");
-                if(pageList.size() == 1){
-                    // 한 페이지만 남은 경우에는 삭제 안 됨
-                    Toast.makeText(getApplicationContext(),"적어도 한 페이지는 있어야 합니다.", Toast.LENGTH_LONG).show();
-                    return false;
-                }
-                removePageFromDB();
-                updateButtonState();
-                Toast.makeText(getApplicationContext(),"페이지 삭제", Toast.LENGTH_LONG).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void setPageList(){
+    public void setPageList(){
         System.out.println("setPageList");
 
         getPageListFromDB();
@@ -150,7 +101,7 @@ public class EditBookActivity  extends AppCompatActivity {
         makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
     }
 
-    private void initialize(){ // head와 첫 페이지 추가
+    public void initialize(){ // head와 첫 페이지 추가
         System.out.println("initialize");
 
         Page head = new Page(book_id, "0",null,0, 1);
@@ -161,27 +112,27 @@ public class EditBookActivity  extends AppCompatActivity {
         pageDB.update(head);
     }
 
-    private void getPageListFromDB(){ // book_id에 해당하는 모든 page 가져오기
+    public void getPageListFromDB(){ // book_id에 해당하는 모든 page 가져오기
         String[] selection = {COLUMN_PAGE[1]};
         String[] selectionArgs = {Long.toString(book_id)};
         pageList = pageDB.select(selection, selectionArgs);
     }
 
-    private void sortPageList(){
+    public void sortPageList(){
         System.out.println("sortPageList");
         ArrayList<Page> sortedPageList = new ArrayList<Page>();
 
         Page head = getHead();
         if(head == null)
             return;
-        long nextPage = head.nextPage;
+        long nextPage = head.getNextPage();
 
         while(nextPage != 0 && !pageList.isEmpty()){ // nextPage 따라가면서 pageList 정렬
             for(int i=0; i<pageList.size(); i++){
-                if(pageList.get(i).id != nextPage)
+                if(pageList.get(i).getId() != nextPage)
                     continue;
                 sortedPageList.add(pageList.get(i));
-                nextPage = pageList.get(i).nextPage;
+                nextPage = pageList.get(i).getNextPage();
                 pageList.remove(i);
                 break;
             }
@@ -190,7 +141,7 @@ public class EditBookActivity  extends AppCompatActivity {
         pageList = sortedPageList;
     }
 
-    private Page getHead(){
+    public Page getHead(){
         String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[5]};
         String[] selectionArgs = {Long.toString(book_id), Integer.toString(1)};
 
@@ -202,13 +153,13 @@ public class EditBookActivity  extends AppCompatActivity {
         return headList.get(0);
     }
 
-    private void makeFlipperByPageList(){
+    public void makeFlipperByPageList(){
         System.out.println("makeFlipperByPageList");
 
         flipper.removeAllViews();
         for(int i=0; i<pageList.size(); i++){
             Page pageTemp = pageList.get(i);
-            View PageView = View.inflate(this, R.layout.edit_editbook_page, null);
+            View PageView = View.inflate(this, R.layout.page_bookpage_page, null);
             // todo : 이미지를 설정해야함
             TextView text = PageView.findViewById(R.id.page_text);
             text.setText(pageTemp.text);
@@ -220,7 +171,7 @@ public class EditBookActivity  extends AppCompatActivity {
         }
     }
 
-    private void addPageBeforeIdx(){ // 이전 페이지 추가
+    public void addPageBeforeIdx(){ // 이전 페이지 추가
         System.out.println("EditBookActivity.addPageBeforeIdx");
         Page current_page, new_page;
         if(page_idx == 0){ // 첫 장 추가 시
@@ -241,7 +192,7 @@ public class EditBookActivity  extends AppCompatActivity {
         System.out.println(page_idx);
     }
 
-    private void addPageAfterIdx(){ // 다음 페이지 추가
+    public void addPageAfterIdx(){ // 다음 페이지 추가
         System.out.println("EditBookActivity.addPageAfterIdx");
         Page current_page, new_page;
         new_page = new Page(book_id, "생성", null, 0, 0);
@@ -256,7 +207,7 @@ public class EditBookActivity  extends AppCompatActivity {
         System.out.println(page_idx);
     }
 
-    private void removePageFromDB(){
+    public void removePageFromDB(){
         System.out.println("EditBookActivity.removePageFromDB");
         Page prevPage;
         if(page_idx==0){
@@ -277,7 +228,7 @@ public class EditBookActivity  extends AppCompatActivity {
         }
     }
 
-    private void updateButtonState(){
+    public void updateButtonState(){
         System.out.println("updateButtonState");
         // 이전, 다음 버튼 상태 update
         int page_number = pageList.size();

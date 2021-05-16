@@ -1,10 +1,5 @@
 package com.uos.makebook.Common;
 
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-
-import com.uos.makebook.Edit.Page;
-
 import java.util.ArrayList;
 
 public interface DB<T>{
