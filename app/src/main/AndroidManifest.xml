@@ -23,6 +23,7 @@
         </activity>
 
         <activity android:name=".MainList.BookListActivity"/>
+        <activity android:name=".Make.MakeCoverActivity"/>
         <activity android:name=".Page.EditBookActivity"/>
         <activity android:name=".Page.ReadBookActivity"/>
     </application>

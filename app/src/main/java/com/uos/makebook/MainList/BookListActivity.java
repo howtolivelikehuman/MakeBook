@@ -14,10 +14,14 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.uos.makebook.Common.BookDB;
+import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Page.EditBookActivity;
 import com.uos.makebook.R;
 import com.uos.makebook.Page.ReadBookActivity;
+import com.uos.makebook.Make.MakeCoverActivity;
+
+import java.util.ArrayList;
 
 
 public class BookListActivity extends AppCompatActivity{
@@ -57,7 +61,7 @@ public class BookListActivity extends AppCompatActivity{
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
-        // toolbar.setTitle(R.string.app_name); => 작동하지 않아요 (희은) 위의 코드로 교체!
+
 
         recyclerView = findViewById(R.id.recyBooklist);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
@@ -69,22 +73,31 @@ public class BookListActivity extends AppCompatActivity{
                 Book book = bookAdapter.getItem(pos);
                 Intent nextIntent;
 
-                switch (mode){
-                    case EDIT_MODE :
-                        nextIntent = new Intent(getApplicationContext(), EditBookActivity.class);
-                        break;
-
-                    case READ_MODE :
-                        nextIntent = new Intent(getApplicationContext(), ReadBookActivity.class);
-                        break;
-
-                    default :
-                        Toast.makeText(getApplicationContext(), "선택에 오류가 발생했습니다", Toast.LENGTH_LONG).show();
-                        return;
+                //만들기
+                if(pos == 0){
+                    Toast.makeText(getApplicationContext(), "책 만들기를 시작합니다", Toast.LENGTH_LONG).show();
+                    nextIntent = new Intent(getApplicationContext(), MakeCoverActivity.class);
+                    startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
                 }
-                nextIntent.putExtra("Id", book.id);
-                nextIntent.putExtra("Name", book.name);
-                startActivity(nextIntent);
+                //그외 책 클릭
+                else{
+                    switch (mode){
+                        case EDIT_MODE :
+                            nextIntent = new Intent(getApplicationContext(), EditBookActivity.class);
+                            break;
+
+                        case READ_MODE :
+                            nextIntent = new Intent(getApplicationContext(), ReadBookActivity.class);
+                            break;
+
+                        default :
+                            Toast.makeText(getApplicationContext(), "선택에 오류가 발생했습니다", Toast.LENGTH_LONG).show();
+                            return;
+                    }
+                    nextIntent.putExtra("Id", book.id);
+                    nextIntent.putExtra("Name", book.name);
+                    startActivity(nextIntent);
+                }
                 return;
             }
         });
@@ -94,6 +107,25 @@ public class BookListActivity extends AppCompatActivity{
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Constant.MAKECOVER_REQUEST) {
+            //성공
+            if (resultCode == Constant.MAKECOVER_RESULT_SUCCESS) {
+                //DB에 저장하기
+                return;
+            }
+            else {
+                Toast.makeText(getApplicationContext(), "표지 생성을 취소하셨습니다", Toast.LENGTH_LONG).show();
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "표지 저장에 오류가 발생하였습니다.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+        @Override
     public boolean onCreateOptionsMenu(Menu menu){
         this.menu = menu;
         getMenuInflater().inflate(R.menu.booklist_menu, menu);
