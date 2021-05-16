@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.uos.makebook.Edit.Page;
+import com.uos.makebook.Page.Page;
 
 import java.util.ArrayList;
 

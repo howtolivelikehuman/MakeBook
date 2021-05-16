@@ -1,4 +1,4 @@
-package com.uos.makebook.Edit;
+package com.uos.makebook.Page;
 
 import android.graphics.Bitmap;
 
