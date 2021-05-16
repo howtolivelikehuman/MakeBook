@@ -5,6 +5,11 @@ import java.util.ArrayList;
 public class Constant {
     private Constant(){}
 
+    //RESULT CODE
+    public static final int MAKECOVER_REQUEST = 100;
+    public static final int MAKECOVER_RESULT_SUCCESS = 101;
+    public static final int MAKECOVER_RESULT_EXIT = 101;
+
     public static final String DATABASE_NAME = "MAKEBOOK";
     public static final String[] TABLE_NAME = {"BOOKLIST", "PAGE"};
     public static final String[] COLUMN_BOOKLIST = {"ID", "NAME", "IMAGE"};
