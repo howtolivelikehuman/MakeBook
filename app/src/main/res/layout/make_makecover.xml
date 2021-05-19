@@ -17,100 +17,128 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="제목 : " />
 
-                <Button
-                    android:id="@+id/cover_btn_color"
+            <EditText
+                android:id="@+id/editText_Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical"
+                android:hint="제목을 입력해 주세요"
+                android:inputType="textPersonName" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cover_btn_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="색상" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="작가 : "
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/editText_Writer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="center_vertical"
+                android:inputType="textPersonName"
+                android:hint="작가를 입력해 주세요"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="지우개"
+                android:textSize="18sp" />
+
+            <RadioGroup
+                android:id="@+id/cover_eraser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/cover_erase_small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="색상" />
+                    android:text="小" />
 
-                <Button
-                    android:id="@+id/btn_erase"
+                <RadioButton
+                    android:id="@+id/cover_erase_middle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="지우개" />
+                    android:text="中" />
 
-            </LinearLayout>
+                <RadioButton
+                    android:id="@+id/cover_erase_big"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="大" />
+            </RadioGroup>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="굵기"
+                    android:textSize="18sp" />
+
+                <SeekBar
+                    android:id="@+id/cover_border"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:text="굵기"
-                        android:textSize="18sp" />
-
-                    <SeekBar
-                        android:id="@+id/cover_border"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:max="50"
-                        android:progressDrawable="@drawable/seekbar_cs"
-                        android:thumb="@drawable/seekbar_thumb" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginLeft="5dp"
-                        android:text="지우개"
-                        android:textSize="18sp" />
-
-                    <RadioGroup
-                        android:id="@+id/cover_eraser"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/cover_erase_small"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="a" />
-
-                        <RadioButton
-                            android:id="@+id/cover_erase_middle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="b" />
-
-                        <RadioButton
-                            android:id="@+id/cover_erase_big"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="v" />
-                    </RadioGroup>
-                </LinearLayout>
-
+                    android:layout_gravity="center_vertical"
+                    android:max="50"
+                    android:progressDrawable="@drawable/seekbar_cs"
+                    android:thumb="@drawable/seekbar_thumb" />
             </LinearLayout>
 
         </LinearLayout>
@@ -159,7 +187,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="취소" />
+            android:text="돌아가기" />
+
+        <Button
+            android:id="@+id/cover_btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="기본 표지" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

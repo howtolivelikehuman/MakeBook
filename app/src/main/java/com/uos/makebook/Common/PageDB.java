@@ -35,10 +35,10 @@ public class PageDB implements DB{
         return database.insert(Constant.TABLE_NAME[1], null, val);
     }
 
-    public int delete(int pk){
+    public int delete(long pk){
         DatabaseHelper.println("page 삭제");
         String selection = Constant.COLUMN_PAGE[0] + " LIKE ?";
-        String[] selectionArgs = {Integer.toString(pk)};
+        String[] selectionArgs = {Long.toString(pk)};
         //delete 된 수 return
         return database.delete(Constant.TABLE_NAME[1], selection, selectionArgs);
     }

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.PageDB;
+import com.uos.makebook.MainList.Book;
 import com.uos.makebook.R;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class PageActivity extends AppCompatActivity {
     int page_idx = 0; // 현재 보고있는 페이지
 
     //book
+    Book book;
     long book_id;
     String book_name;
 
@@ -50,8 +52,15 @@ public class PageActivity extends AppCompatActivity {
 
         //인텐트로 값 받아오기
         Intent editIntent = getIntent();
-        book_id = editIntent.getIntExtra("Id", -1);
-        book_name = editIntent.getStringExtra("Name");
+
+        /***List에서 Parcelable로 Book 객체 자체를 넘기기 때문에, 코드부분 수정합니다!***/
+        //book_id = editIntent.getIntExtra("Id", -1);
+        //book_name = editIntent.getStringExtra("Name");
+        book = editIntent.getParcelableExtra("book");
+        book_id = book.getId();
+        book_name = book.getTitle();
+
+
 
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);
