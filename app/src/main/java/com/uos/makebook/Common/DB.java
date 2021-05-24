@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface DB<T>{
     long insert(DTO o);
-    int delete(int pk);
+    int delete(long pk);
     int update(DTO o);
     ArrayList<T> selectAll();
     ArrayList<T> select(String[] column, String[] data);

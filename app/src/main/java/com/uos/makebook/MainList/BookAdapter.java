@@ -67,7 +67,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView text_name;
+        TextView text_name, text_writer, text_createDate;
         ImageView image_cover;
 
 
@@ -79,6 +79,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 public void onClick(View v) {
                     int pos = getAdapterPosition();
                     if (pos != RecyclerView.NO_POSITION){
+
                         //리스너 메소드 호출
                         if(listener != null){
                             listener.onItemClick(v,pos);
@@ -87,11 +88,15 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
                 }
             });
             text_name = itemView.findViewById(R.id.textViewBookTitle);
+            text_writer = itemView.findViewById(R.id.textViewBookWriter);
+            text_createDate = itemView.findViewById(R.id.textViewBookCreateDate);
             image_cover = itemView.findViewById(R.id.imageBookcover);
         }
 
         public void setItem(Book item){
-            text_name.setText(item.getName());
+            text_name.setText(item.getTitle());
+            text_writer.setText(item.getWriter());
+            text_createDate.setText(item.getCreatedate());
             //커버사진
             Glide.with(itemView)
                     .load(item.getCover()).thumbnail(0.5f)

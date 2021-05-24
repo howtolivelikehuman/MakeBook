@@ -1,36 +1,62 @@
 package com.uos.makebook.MainList;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.uos.makebook.Common.DTO;
 
-public class Book implements DTO{
-    int id;
-    String name;
+public class Book implements DTO, Parcelable {
+    long id;
+    String title;
+    String writer;
+    String createdate;
     Bitmap cover;
 
     public Book(){}
 
-    public Book(int id, String name, Bitmap cover) {
+    public Book(long id, String name, String writer, String createdate, Bitmap cover) {
         this.id = id;
-        this.name = name;
+        this.title = name;
+        this.writer = writer;
+        this.createdate = createdate;
         this.cover = cover;
     }
 
-    public int getId() {
+    public Book(Parcel in) {
+        readFromParcel(in);
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getWriter() {
+        return writer;
+    }
+
+    public void setWriter(String writer) {
+        this.writer = writer;
+    }
+
+    public String getCreatedate() {
+        return createdate;
+    }
+
+    public void setCreatedate(String createdate) {
+        this.createdate = createdate;
+    }
+
+    public void setTitle(String name) {
+        this.title = name;
     }
 
     public Bitmap getCover() {
@@ -39,5 +65,36 @@ public class Book implements DTO{
 
     public void setCover(Bitmap cover) {
         this.cover = cover;
+    }
+
+    public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>(){
+        public Book createFromParcel(Parcel in){
+            return new Book(in);
+        }
+
+        @Override
+        public Book[] newArray(int i) {
+            return new Book[i];
+        }
+    };
+    public void readFromParcel(Parcel in){
+        id = in.readLong();
+        title = in.readString();
+        writer = in.readString();
+        createdate = in.readString();
+        cover = in.readParcelable(Bitmap.class.getClassLoader());
+    }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(id);
+        parcel.writeString(title);
+        parcel.writeString(writer);
+        parcel.writeString(createdate);
+        parcel.writeParcelable(cover,i);
     }
 }

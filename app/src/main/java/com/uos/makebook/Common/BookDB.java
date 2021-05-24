@@ -25,17 +25,18 @@ public class BookDB implements DB {
         ContentValues val = new ContentValues();
 
         //ID는 AUTO INCREMENT
-        val.put(Constant.COLUMN_BOOKLIST[1], book.getName());
-        val.put(Constant.COLUMN_BOOKLIST[2], Function.getByteArrayFromDrawable(book.getCover()));
+        val.put(Constant.COLUMN_BOOKLIST[1], book.getTitle());
+        val.put(Constant.COLUMN_BOOKLIST[2], book.getWriter());
+        val.put(Constant.COLUMN_BOOKLIST[3], Function.getByteArrayFromDrawable(book.getCover()));
 
         //insert시 PK return
         return database.insert(Constant.TABLE_NAME[0], null, val);
     }
 
-    public int delete(int pk) {
+    public int delete(long pk) {
         DatabaseHelper.println("Book 삭제");
         String selection = Constant.COLUMN_BOOKLIST[0] + " LIKE ?";
-        String[] selectionArgs = {Integer.toString(pk)};
+        String[] selectionArgs = {Long.toString(pk)};
         //delete 된 수 return
         return database.delete(Constant.TABLE_NAME[0], selection, selectionArgs);
     }
@@ -45,14 +46,14 @@ public class BookDB implements DB {
 
         Book book = (Book) o;
         ContentValues val = new ContentValues();
-        val.put(Constant.COLUMN_BOOKLIST[1], book.getName());
-        val.put(Constant.COLUMN_BOOKLIST[2], Function.getByteArrayFromDrawable(book.getCover()));
+        val.put(Constant.COLUMN_BOOKLIST[1], book.getTitle());
+        val.put(Constant.COLUMN_BOOKLIST[2], book.getWriter());
+        val.put(Constant.COLUMN_BOOKLIST[3], Function.getByteArrayFromDrawable(book.getCover()));
 
-        String whereClause = Constant.COLUMN_BOOKLIST[0] + " =";
-        String[] whereArgs = {String.valueOf(book.getId())};
+        String whereClause = Constant.COLUMN_BOOKLIST[0] + " = " + book.getId();
 
         //update 된 수 return
-        return database.update(Constant.TABLE_NAME[0], val, whereClause, whereArgs);
+        return database.update(Constant.TABLE_NAME[0], val, whereClause, null);
     }
 
     public ArrayList<Book> selectAll() {
@@ -69,14 +70,16 @@ public class BookDB implements DB {
                 //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
                 //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
                 //그냥 하드코딩해도됨
-                b.setId(cursor.getInt(0));
-                b.setName(cursor.getString(1));
-                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(2)));
+                b.setId(cursor.getLong(0));
+                b.setTitle(cursor.getString(1));
+                b.setWriter(cursor.getString(2));
+                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(3)));
+                b.setCreatedate(cursor.getString(4));
                 books.add(b);
             }
-        } else {
+        }
+        else {
             DatabaseHelper.println("조회 결과가 없습니다.");
-            return null;
         }
         cursor.close();
         return books;
@@ -107,12 +110,11 @@ public class BookDB implements DB {
             Book b;
             while (cursor.moveToNext()) {
                 b = new Book();
-                //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
-                //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
-                //그냥 하드코딩해도됨
-                b.setId(cursor.getInt(0));
-                b.setName(cursor.getString(1));
-                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(2)));
+                b.setId(cursor.getLong(0));
+                b.setTitle(cursor.getString(1));
+                b.setWriter(cursor.getString(2));
+                b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(3)));
+                b.setCreatedate(cursor.getString(3));
                 books.add(b);
             }
         }
