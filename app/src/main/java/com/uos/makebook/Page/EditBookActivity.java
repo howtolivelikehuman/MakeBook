@@ -28,6 +28,10 @@ public class EditBookActivity  extends PageActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
+            case R.id.action_insert_text:
+                return true;
+            case R.id.action_insert_image:
+                return true;
             case R.id.action_create_prev :
                 // 페이지 추가
                 System.out.println("페이지 추가");
