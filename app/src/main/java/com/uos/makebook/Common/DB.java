@@ -6,6 +6,7 @@ public interface DB<T>{
     long insert(DTO o);
     int delete(long pk);
     int update(DTO o);
+    DTO selectById(Long id);
     ArrayList<T> selectAll();
     ArrayList<T> select(String[] column, String[] data);
 }

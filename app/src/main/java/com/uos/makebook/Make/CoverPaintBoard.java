@@ -42,6 +42,12 @@ public class CoverPaintBoard extends View {
         init(context);
     }
 
+    public CoverPaintBoard(Context context, Bitmap bitmap) {
+        super(context);
+        mBitmap = bitmap;
+        init(context);
+    }
+
     public CoverPaintBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
@@ -82,11 +88,17 @@ public class CoverPaintBoard extends View {
     }
 
     protected void onSizeChanged(int w, int h, int oldw, int oldh){
-        Bitmap img = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas();
-        canvas.setBitmap((img));
         canvas.drawColor(Color.WHITE);
-        mBitmap = img;
+
+        if(mBitmap == null){
+            Bitmap img = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
+            canvas.setBitmap((img));
+            mBitmap = img;
+        }
+        else{
+            canvas.setBitmap(mBitmap);
+        }
         mCanvas = canvas;
     }
 
@@ -95,6 +107,7 @@ public class CoverPaintBoard extends View {
             canvas.drawBitmap(mBitmap,0,0,null);
         }
     }
+
 
     public boolean onTouchEvent(MotionEvent event){
         int action = event.getAction();
