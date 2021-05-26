@@ -4,15 +4,25 @@ import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,10 +38,6 @@ import com.uos.makebook.Make.MakeCoverActivity;
 
 
 public class BookListActivity extends AppCompatActivity{
-    //읽기, 수정
-    //static final int READ_MODE = 0;
-    //static final int EDIT_MODE = 1;
-    //int mode = READ_MODE;
 
     //DB
     DB bookDB;
@@ -42,8 +48,10 @@ public class BookListActivity extends AppCompatActivity{
     Toolbar toolbar;
     Menu menu;
 
+    TextView cover, edit, read, delete;
+
     //팝업
-    Dialog popUp;
+    PopupMenu popUp;
     AlertDialog finalAsk;
 
 
@@ -62,36 +70,43 @@ public class BookListActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
 
-        //팝업 설정
-        popUp = new Dialog(BookListActivity.this);
-        popUp.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        popUp.setContentView(R.layout.mainlist_popup);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(BookListActivity.this);
+
 
         recyclerView = findViewById(R.id.recyBooklist);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
 
+        /*.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+                if (e.getAction() == MotionEvent.ACTION_DOWN) {
+                    View reV = rv.findChildViewUnder(e.getX(), e.getY());
+                    int position = rv.getChildAdapterPosition(reV);
+
+
+                }
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+            }
+        });*/
+
         bookAdapter.setOnItemClickListener(new BookAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int pos) {
                 Book book = bookAdapter.getItem(pos);
-
-                //만들기
-                if(pos == 0){
-                    Toast.makeText(getApplicationContext(), "책 만들기를 시작합니다", Toast.LENGTH_LONG).show();
-                    Intent nextIntent = new Intent(getApplicationContext(), MakeCoverActivity.class);
-                    startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
-                }
-
-                //그외 클릭
-                else{
-                   showPopUp(book, builder);
-                }
+                showPopUp(book, v);
                 return;
             }
         });
+
 
         //DB에서 데이터 받아오기
         bookAdapter.setItems(bookDB.selectAll());
@@ -103,63 +118,66 @@ public class BookListActivity extends AppCompatActivity{
         bookAdapter.notifyDataSetChanged();
     }
 
-    public void showPopUp(Book book, AlertDialog.Builder builder){
-        //GUI
-        TextView cover, edit, read, delete;
+    public void showPopUp(Book book, View view){
 
+        //팝업메뉴
+        if(Build.VERSION.SDK_INT >= 22){
+            popUp = new PopupMenu(getApplicationContext(), view,Gravity.END,0,R.style.MyPopupMenu);
+        }
+        else{
+            popUp = new PopupMenu(getApplicationContext(), view);
+        }
+
+        popUp.inflate(R.menu.mainlist_popup);
+
+        popUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    //표지만들기
+                    case R.id.popuptv_cover : {
+                        Intent intent = new Intent(getApplicationContext(), MakeCoverActivity.class);
+                        book.setCover(null);
+                        intent.putExtra("book",book);
+                        startActivityForResult(intent, Constant.MAKECOVER_REQUEST);
+                        popUp.dismiss();
+                        break;
+                    }
+                    //읽기
+                    case R.id.popuptv_read : {
+                        Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
+                        book.setCover(null);
+                        intent.putExtra("book",book);
+                        startActivityForResult(intent, Constant.READ_REQUEST);
+                        popUp.dismiss();
+                        break;
+                    }
+                    //수정하기
+                    case R.id.popuptv_edit : {
+                        Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
+                        book.setCover(null);
+                        intent.putExtra("book",book);
+                        startActivityForResult(intent,Constant.EDIT_REQUEST);
+                        popUp.dismiss();
+                        break;
+                    }
+                    //삭제하기
+                    case R.id.popuptv_delete : {
+
+                        onDeleteFinalAsk(book.getId());
+                        popUp.dismiss();
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
         popUp.show();
-        cover =  popUp.findViewById(R.id.popuptv_cover);
-        edit =  popUp.findViewById(R.id.popuptv_edit);
-        delete =  popUp.findViewById(R.id.popuptv_delete);
-        read =  popUp.findViewById(R.id.popuptv_read);
 
-        //표지만들기
-        cover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MakeCoverActivity.class);
-                book.setCover(null);
-                intent.putExtra("book",book);
-                startActivityForResult(intent, Constant.MAKECOVER_REQUEST);
-                popUp.dismiss();
-            }
-        });
-
-        //수정하기
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
-                book.setCover(null);
-                intent.putExtra("book",book);
-                startActivityForResult(intent,Constant.EDIT_REQUEST);
-                popUp.dismiss();
-            }
-        });
-
-        //읽기
-        read.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
-                book.setCover(null);
-                intent.putExtra("book",book);
-                startActivityForResult(intent, Constant.READ_REQUEST);
-                popUp.dismiss();
-            }
-        });
-
-        //삭제하기
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDeleteFinalAsk(book.getId(),builder);
-                popUp.dismiss();
-            }
-        });
     }
 
-    public void onDeleteFinalAsk(long bookId, AlertDialog.Builder builder){
+    public void onDeleteFinalAsk(long bookId){
+        AlertDialog.Builder builder = new AlertDialog.Builder(BookListActivity.this);
         builder.setMessage("책을 삭제한 뒤엔 복구할 수 없습니다. \n삭제하시겠습니까?");
         builder.setPositiveButton("네", new DialogInterface.OnClickListener(){
             @Override
@@ -218,16 +236,10 @@ public class BookListActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
-            case R.id.action_read :
-                menu.findItem(R.id.action_edit).setVisible(true);
-                item.setVisible(false);
-                Toast.makeText(getApplicationContext(),"편집 모드", Toast.LENGTH_LONG).show();
-                return true;
-
-            case R.id.action_edit:
-                menu.findItem(R.id.action_read).setVisible(true);
-                item.setVisible(false);
-                Toast.makeText(getApplicationContext(),"감상 모드", Toast.LENGTH_LONG).show();
+            case R.id.action_create2:
+                Toast.makeText(getApplicationContext(), "책 만들기를 시작합니다", Toast.LENGTH_LONG).show();
+                Intent nextIntent = new Intent(getApplicationContext(), MakeCoverActivity.class);
+                startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
                 return true;
 
             default:

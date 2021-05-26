@@ -29,7 +29,6 @@ import petrov.kristiyan.colorpicker.ColorPicker;
 
 public class MakeCoverActivity extends AppCompatActivity {
 
-
     //액티비티
     Activity activity;
 
