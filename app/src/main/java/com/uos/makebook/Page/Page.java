@@ -139,8 +139,7 @@ public class Page implements DTO {
 
     public ElementData findElement(float x, float y) {
         for (ElementData element : elements) {
-            if (element.getX() <= x && x <= element.getX() + element.getWidth() &&
-                element.getY() <= y && y <= element.getY() + element.getHeight()) {
+            if (element.isContaining(x, y)) {
                 return element;
             }
         }
