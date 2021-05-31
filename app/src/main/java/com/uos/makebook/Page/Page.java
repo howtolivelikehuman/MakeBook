@@ -1,5 +1,7 @@
 package com.uos.makebook.Page;
 
+import android.graphics.Canvas;
+
 import com.uos.makebook.Common.DTO;
 import com.uos.makebook.Page.Element.ElementData;
 import com.uos.makebook.Page.Element.ImageData;
@@ -78,6 +80,30 @@ public class Page implements DTO {
     }
 
     private void parseContents() {
+        /*
+        Text 예시
+        {
+            "kind": "text",
+            "x": 100,
+            "y": 100,
+            "width": 400,
+            "height": 400,
+            "value": "안녕하세요~",
+            "fontSize": 32,
+            "fontColor": -16777216
+        },
+
+        Image 예시
+        {
+            "kind": "image",
+            "x": 100,
+            "y": 100,
+            "width": 400,
+            "height": 400,
+            "src": "/~/~/example.png"
+        },
+        */
+
         // JSON 데이터를 파싱하여 그림, 텍스트 데이터(ElementData)를 알아낸다.
         try {
             elements = new ArrayList<>();
@@ -87,21 +113,13 @@ public class Page implements DTO {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 String kind = jsonObject.getString("kind");
 
-                // 공통 속성 파싱
-                int x = jsonObject.getInt("x");
-                int y = jsonObject.getInt("y");
-                int width = jsonObject.getInt("width");
-                int height = jsonObject.getInt("height");
-
                 ElementData data = null;
                 switch (kind) {
                     case "image":
-                        String b64Data = jsonObject.getString("b64Data");
-                        data = new ImageData(b64Data, x, y, width, height);
+                        data = new ImageData(jsonObject);
                         break;
                     case "text":
-                        String value = jsonObject.getString("value");
-                        data = new TextData(value, x, y, width, height);
+                        data = new TextData(jsonObject);
                         break;
                     default:
                         break;
@@ -111,6 +129,22 @@ public class Page implements DTO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void drawElements(Canvas canvas) {
+        for (ElementData element : elements) {
+            element.drawOn(canvas);
+        }
+    }
+
+    public ElementData findElement(float x, float y) {
+        for (ElementData element : elements) {
+            if (element.getX() <= x && x <= element.getX() + element.getWidth() &&
+                element.getY() <= y && y <= element.getY() + element.getHeight()) {
+                return element;
+            }
+        }
+        return null;
     }
 }
 

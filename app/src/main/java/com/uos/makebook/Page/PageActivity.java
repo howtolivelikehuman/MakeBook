@@ -113,8 +113,8 @@ public class PageActivity extends AppCompatActivity {
     public void initialize(){ // head와 첫 페이지 추가
         System.out.println("initialize");
 
-        Page head = new Page(book_id, "0", 0, 1);
-        Page firstPage = new Page(book_id, "1", 0, 0);
+        Page head = new Page(book_id, "[]", 0, 1);
+        Page firstPage = new Page(book_id, "[]", 0, 0);
         long head_pk = pageDB.insert(head); head.setPageId(head_pk);
         long first_pk = pageDB.insert(firstPage);
         head.setNextPage(first_pk);
@@ -186,7 +186,7 @@ public class PageActivity extends AppCompatActivity {
         }else{
             current_page = pageList.get(page_idx-1);
         }
-        new_page = new Page(book_id, "생성", 0, 0);
+        new_page = new Page(book_id, "[]", 0, 0);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
 
@@ -200,7 +200,7 @@ public class PageActivity extends AppCompatActivity {
     public void addPageAfterIdx(){ // 다음 페이지 추가
         System.out.println("EditBookActivity.addPageAfterIdx");
         Page current_page, new_page;
-        new_page = new Page(book_id, "생성", 0, 0);
+        new_page = new Page(book_id, "[]", 0, 0);
         current_page = pageList.get(page_idx);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
