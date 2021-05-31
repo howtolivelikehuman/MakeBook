@@ -1,16 +1,15 @@
 package com.uos.makebook.Page;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.R;
 
+
 public class ReadBookActivity extends PageActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,7 +17,6 @@ public class ReadBookActivity extends PageActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        // edit menu 연결
         this.menu = menu;
         getMenuInflater().inflate(R.menu.readbook_menu, menu);
         return true;

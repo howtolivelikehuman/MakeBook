@@ -4,16 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
-import com.uos.makebook.Common.PageDB;
+import com.uos.makebook.Common.Constant;
 import com.uos.makebook.R;
 
+
 public class EditBookActivity  extends PageActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+        book.setCover(null);
+        intent.putExtra("book",book);
+        intent.putExtra("mode", "EDIT_MODE");
+        startActivityForResult(intent, Constant.EDIT_REQUEST);
+        super.onBackPressed();
     }
 
     @Override
@@ -23,6 +34,7 @@ public class EditBookActivity  extends PageActivity {
         getMenuInflater().inflate(R.menu.editbook_menu, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -58,4 +70,6 @@ public class EditBookActivity  extends PageActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }

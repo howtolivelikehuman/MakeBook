@@ -35,7 +35,7 @@ import com.uos.makebook.Page.EditBookActivity;
 import com.uos.makebook.Page.ReadBookActivity;
 import com.uos.makebook.R;
 import com.uos.makebook.Make.MakeCoverActivity;
-
+import com.uos.makebook.Page.ViewPageListActivity;
 
 public class BookListActivity extends AppCompatActivity{
 
@@ -145,18 +145,20 @@ public class BookListActivity extends AppCompatActivity{
                     }
                     //읽기
                     case R.id.popuptv_read : {
-                        Intent intent = new Intent(getApplicationContext(), ReadBookActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
                         book.setCover(null);
                         intent.putExtra("book",book);
+                        intent.putExtra("mode", "READ_MODE");
                         startActivityForResult(intent, Constant.READ_REQUEST);
                         popUp.dismiss();
                         break;
                     }
                     //수정하기
                     case R.id.popuptv_edit : {
-                        Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
                         book.setCover(null);
                         intent.putExtra("book",book);
+                        intent.putExtra("mode", "EDIT_MODE");
                         startActivityForResult(intent,Constant.EDIT_REQUEST);
                         popUp.dismiss();
                         break;
