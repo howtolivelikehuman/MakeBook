@@ -6,6 +6,7 @@ import android.media.MediaRecorder;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -114,10 +115,14 @@ public class ReadBookActivity extends PageActivity {
         }
     }
 
-    private void playRecord(){
+    private void playRecord(int idx){
         // 녹음 재생
-        String filepath = getPagePath();
+        if(idx == -1){
+            idx = page_idx;
+        }
+        String filepath = getPagePath(idx);
         File file = new File(filepath);
+        System.out.println(filepath);
         if(!file.exists()){
             Toast.makeText(this, "녹음 파일이 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
             return;
@@ -153,23 +158,28 @@ public class ReadBookActivity extends PageActivity {
     }
 
     private void playAll() {
-        // todo : 첫페이지로 돌아가서 순차 재생
-        try {
-            Toast.makeText(getApplicationContext(),"전체 재생", Toast.LENGTH_LONG).show();
-//            for (int i = 0; i < page_idx; i++)
-//                flipper.showPrevious();
-            page_idx = 0;
-            playRecord();
-            for (int i = 0; i < pageList.size()-1; i++) {
-                flipper.showNext();
-                playRecord();
-                page_idx++;
-                System.out.println(page_idx);
-                Thread.sleep(1000);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        Handler mHandler = new Handler();
+        Toast.makeText(getApplicationContext(),"전체 재생", Toast.LENGTH_LONG).show();
+        for (int i = 0; i < page_idx; i++) {
+            flipper.showPrevious();
         }
+        page_idx = 0;
+        updateButtonState();
+        isPlaying = true;
+        playRecord(0);
+        for (int i = 0; i < pageList.size()-1; i++) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    flipper.showNext();
+                    page_idx++;
+                    updateButtonState();
+                    playRecord(page_idx);
+                }
+            }, 3000*(i+1)); // 3초 간격으로 페이지 실행
+        }
+        isPlaying = false;
+        playThis.setIcon(ContextCompat.getDrawable(this, R.drawable.play));
     }
 
     private void deleteThis(){ // 파일 존재하는 지 판단 => 삭제
@@ -222,7 +232,7 @@ public class ReadBookActivity extends PageActivity {
                 if(isPlaying) {
                     stopPlayRecord();
                 }else{
-                    playRecord();
+                    playRecord(-1);
                 }
                 return true;
             case R.id.playAll :
