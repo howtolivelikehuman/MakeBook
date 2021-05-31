@@ -207,6 +207,8 @@ public class ReadBookActivity extends PageActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
+            case R.id.action_read_done :
+                finish();
             case R.id.record :
                 // 녹음 시작 / 정지
                 if(isRecording) {
