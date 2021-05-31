@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:name="popupMenuStyle"
+        android:id="@+id/popuptv_cover"
+        android:title="표지 설정"/>
+
+    <item
+        android:id="@+id/popuptv_read"
+        android:title="읽기" />
+
+    <item
+        android:id="@+id/popuptv_edit"
+        android:title="수정" />
+
+    <item
+        android:id="@+id/popuptv_delete"
+        android:title="삭제" />
+</menu>

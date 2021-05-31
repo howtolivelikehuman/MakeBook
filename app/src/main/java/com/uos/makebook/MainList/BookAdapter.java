@@ -1,5 +1,6 @@
 package com.uos.makebook.MainList;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,14 @@ import com.bumptech.glide.Glide;
 import com.uos.makebook.R;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     static ArrayList<Book> bookItems = new ArrayList<Book>();
-    private OnItemClickListener listener = null ;
+    private OnItemClickListener listener = null;
+    private int[] defaultList = {R.drawable.default_cover, R.drawable.default_cover2, R.drawable.default_cover3, R.drawable.default_cover4};
+    private Random random = new Random();
 
     @NonNull
     @Override
@@ -29,12 +33,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if(position == 0){
-            holder.setFirstItem();
-        }else{
-            Book item = bookItems.get(position);
-            holder.setItem(item);
-        }
+        Book item = bookItems.get(position);
+        holder.setItem(item);
     }
 
     @Override
@@ -43,8 +43,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     }
     public void addItem(Book item) { bookItems.add(item); }
     public void setItems(ArrayList<Book> personItems){
-        //만들기용 책
-        personItems.add(0,new Book());
         this.bookItems=personItems;
     }
     public Book getItem(int position){
@@ -101,21 +99,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
             Glide.with(itemView)
                     .load(item.getCover()).thumbnail(0.5f)
                     .fitCenter()
-                    .placeholder(R.drawable.default_cover)
-                    .error(R.drawable.default_cover)
-                    .fallback(R.drawable.default_cover)
-                    .into(image_cover);
-        }
-
-        public void setFirstItem(){
-            text_name.setText("만들기");
-            //더하기사진
-            Glide.with(itemView)
-                    .load(R.drawable.plus)
-                    .fitCenter()
-                    .placeholder(R.drawable.plus)
-                    .error(R.drawable.plus)
-                    .fallback(R.drawable.plus)
+                    .placeholder(defaultList[random.nextInt(4)])
+                    .error(defaultList[random.nextInt(4)])
+                    .fallback(defaultList[random.nextInt(4)])
                     .into(image_cover);
         }
     }

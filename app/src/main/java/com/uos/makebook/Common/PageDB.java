@@ -60,6 +60,11 @@ public class PageDB implements DB{
         return database.update(Constant.TABLE_NAME[1], val, whereClause, whereArgs);
     }
 
+    @Override
+    public DTO selectById(Long id) {
+        return null;
+    }
+
     private Page makePage(Cursor cursor){
         Page p;
         p = new Page();
