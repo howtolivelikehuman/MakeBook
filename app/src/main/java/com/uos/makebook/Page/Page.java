@@ -29,12 +29,12 @@ public class Page implements DTO {
     }
 
     public String getContents() {
+        updateContents();
         return contents;
     }
 
     public void setContents(String contents) {
         this.contents = contents;
-        System.out.println("[" + contents + "]");
         parseContents();
     }
 
@@ -131,6 +131,16 @@ public class Page implements DTO {
         }
     }
 
+    public void updateContents() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (ElementData element : elements) {
+            jsonArray.put(element.toJSON());
+        }
+
+        contents = jsonArray.toString();
+    }
+
     public void drawElements(Canvas canvas) {
         for (ElementData element : elements) {
             element.drawOn(canvas);
@@ -144,6 +154,11 @@ public class Page implements DTO {
             }
         }
         return null;
+    }
+
+    public void addText(String value, int fontSize, int fontColor) {
+        elements.add(new TextData(value, fontSize, fontColor));
+        updateContents();
     }
 }
 

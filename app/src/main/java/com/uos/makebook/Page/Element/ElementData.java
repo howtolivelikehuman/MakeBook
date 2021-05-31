@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public abstract class ElementData {
-    public static final float RESIZE_BORDER = 14;
+    public static final float RESIZE_BORDER = 20;
 
     private float x = 0, y = 0;
     private float width = 0, height = 0;
@@ -22,15 +22,26 @@ public abstract class ElementData {
             y = (float) jsonObject.getDouble("y");
             width = (float) jsonObject.getDouble("width");
             height = (float) jsonObject.getDouble("height");
-
-            borderPaint = new Paint();
-            borderPaint.setAntiAlias(true);
-            borderPaint.setStrokeCap(Paint.Cap.ROUND);
-            borderPaint.setColor(Color.parseColor("#33DBFF"));
-            borderPaint.setStrokeWidth(3);
+            createPaint();
         } catch (JSONException e) {
             System.err.println("ElementData: Invalid JSON object");
         }
+    }
+
+    public ElementData(float x, float y, float width, float height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        createPaint();
+    }
+
+    private void createPaint() {
+        borderPaint = new Paint();
+        borderPaint.setAntiAlias(true);
+        borderPaint.setStrokeCap(Paint.Cap.ROUND);
+        borderPaint.setColor(Color.parseColor("#33DBFF"));
+        borderPaint.setStrokeWidth(3);
     }
 
     // 좌측 상단의 X좌표.
@@ -154,5 +165,20 @@ public abstract class ElementData {
         }
 
         return kind;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("x", x);
+            json.put("y", y);
+            json.put("width", width);
+            json.put("height", height);
+            return json;
+        } catch (JSONException e) {
+            System.err.println("ElementData: Failed to generate JSON");
+            return null;
+        }
     }
 }

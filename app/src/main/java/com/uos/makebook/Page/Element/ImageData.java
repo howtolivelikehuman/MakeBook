@@ -13,13 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ImageData extends ElementData {
+    private String src;
     private Bitmap bitmap = null;
     private Paint paint;
 
     public ImageData(JSONObject jsonObject) {
         super(jsonObject);
         try {
-            String src = jsonObject.getString("src");
+            src = jsonObject.getString("src");
             bitmap = BitmapFactory.decodeFile(src);
             if (bitmap == null) {
                 System.err.println("ImageData: Image file is not found");
@@ -37,6 +38,19 @@ public class ImageData extends ElementData {
         super.drawOn(canvas);
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, getX(), getY(), paint);
+        }
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject json = super.toJSON();
+
+        try {
+            json.put("src", src);
+            return json;
+        } catch (JSONException e) {
+            System.err.println("TextData: Failed to generate JSON");
+            return null;
         }
     }
 }

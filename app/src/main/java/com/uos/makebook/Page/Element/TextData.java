@@ -3,10 +3,13 @@ package com.uos.makebook.Page.Element;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +31,24 @@ public class TextData extends ElementData {
         } catch (JSONException e) {
             System.err.println("TextData: Invalid JSON object");
         }
+    }
+
+    public TextData(String value, int fontSize, int fontColor) {
+        super(0, 0, 0, 0);
+        this.text = value;
+        this.fontSize = fontSize;
+        this.fontColor = fontColor;
+
+        generateTextPaint();
+        generateTextLayout();
+
+        Rect bound = new Rect();
+        TextPaint paint = new TextPaint();
+        paint.setTextSize(fontSize);
+        paint.getTextBounds(value, 0, value.length(), bound);
+
+        setWidth(bound.width());
+        setHeight(bound.height());
     }
 
     private void generateTextLayout() {
@@ -60,5 +81,20 @@ public class TextData extends ElementData {
         canvas.translate(getX(), getY());
         textLayout.draw(canvas);
         canvas.restore();
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject json = super.toJSON();
+
+        try {
+            json.put("value", text);
+            json.put("fontSize", fontSize);
+            json.put("fontColor", fontColor);
+            return json;
+        } catch (JSONException e) {
+            System.err.println("TextData: Failed to generate JSON");
+            return null;
+        }
     }
 }

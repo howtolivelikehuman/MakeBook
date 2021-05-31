@@ -1,16 +1,22 @@
 package com.uos.makebook.Page;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.R;
 
 public class EditBookActivity  extends PageActivity {
+    public static final int REQUEST_TEXT = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +35,9 @@ public class EditBookActivity  extends PageActivity {
         switch (item.getItemId())
         {
             case R.id.action_insert_text:
+                System.out.println("글 추가");
+                Intent intent = new Intent(this, AddTextActivity.class);
+                startActivityForResult(intent, REQUEST_TEXT);
                 return true;
             case R.id.action_insert_image:
                 return true;
@@ -60,6 +69,24 @@ public class EditBookActivity  extends PageActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_TEXT) {
+            if (resultCode == RESULT_OK) {
+                Page current = pageList.get(page_idx);
+                String value = data.getStringExtra("value");
+                int fontSize = data.getIntExtra("fontSize", 32);
+                int fontColor = data.getIntExtra("fontColor", Color.BLACK);
+                current.addText(value, fontSize, fontColor);
+                flipper.getCurrentView().invalidate();
+            } else {
+                System.err.println("EditBookActivity: Failed to add text.");
+            }
         }
     }
 }
