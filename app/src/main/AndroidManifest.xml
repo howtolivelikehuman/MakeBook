@@ -31,6 +31,7 @@
         <activity android:name=".Make.MakeCoverActivity"/>
         <activity android:name=".Page.EditBookActivity"/>
         <activity android:name=".Page.ReadBookActivity"/>
+        <activity android:name=".Page.ViewPageListActivity"/>
     </application>
 
 </manifest>

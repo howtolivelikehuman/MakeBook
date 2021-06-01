@@ -194,6 +194,7 @@ public class MakeCoverActivity extends AppCompatActivity {
                     book.setId(bookDB.insert(book));
                     Intent nextIntent = new Intent(getApplicationContext(), EditBookActivity.class);
                     nextIntent.putExtra("book",book);
+                    nextIntent.putExtra("list_idx", 0);
                     book.setCover(null);
                     startActivity(nextIntent);
                     finish();
