@@ -2,6 +2,7 @@ package com.uos.makebook.Make;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,7 +28,6 @@ import com.uos.makebook.R;
 import petrov.kristiyan.colorpicker.ColorPicker;
 
 public class MakeCoverActivity extends AppCompatActivity {
-
 
     //액티비티
     Activity activity;
@@ -61,10 +61,8 @@ public class MakeCoverActivity extends AppCompatActivity {
         setContentView(R.layout.make_makecover);
         Intent intent = getIntent();
 
-        layout = findViewById(R.id.LayoutCanvas);
-        paintBoard = new CoverPaintBoard(this);
-        layout.addView(paintBoard);
-        paintBoard.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        book = intent.getParcelableExtra("book");
+        bookDB = new BookDB(getApplicationContext());
 
         color = findViewById(R.id.cover_btn_color);
         border = findViewById(R.id.cover_border);
@@ -81,17 +79,27 @@ public class MakeCoverActivity extends AppCompatActivity {
         edit_title = findViewById(R.id.editText_Title);
         edit_writer = findViewById(R.id.editText_Writer);
 
-        book = intent.getParcelableExtra("book");
-
+        Bitmap curbitmap = null;
         //Id가 넘어온거면, 생성이 아님
         if(book != null){
             mode = EDIT_MODE;
             edit_title.setText(book.getTitle());
             edit_writer.setText(book.getWriter());
+            curbitmap = ((Book)bookDB.selectById(book.getId())).getCover();
         }else {
             book = new Book();
         }
 
+        if(curbitmap == null){
+            paintBoard = new CoverPaintBoard(this);
+        }else{
+            Bitmap newBitmap = curbitmap.copy(Bitmap.Config.ARGB_8888,true);
+            paintBoard = new CoverPaintBoard(this, newBitmap);
+        }
+
+        layout = findViewById(R.id.LayoutCanvas);
+        layout.addView(paintBoard);
+        paintBoard.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
 
         //지우개
         eraser.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -173,7 +181,6 @@ public class MakeCoverActivity extends AppCompatActivity {
                 book.setCover(paintBoard.mBitmap);
                 book.setTitle(edit_title.getText().toString());
                 book.setWriter(edit_writer.getText().toString());
-                bookDB = new BookDB(getApplicationContext());
 
                 //edit -> 종료하고 돌아가기
                 if(mode == EDIT_MODE){
@@ -209,7 +216,6 @@ public class MakeCoverActivity extends AppCompatActivity {
                 }
                 book.setTitle(edit_title.getText().toString());
                 book.setWriter(edit_writer.getText().toString());
-                bookDB = new BookDB(getApplicationContext());
 
                 //만들던 중이면
                 if(mode == CREAT_MODE){

@@ -52,7 +52,7 @@ public class Book implements DTO, Parcelable {
     }
 
     public void setCreatedate(String createdate) {
-        this.createdate = createdate;
+        this.createdate = createdate.split(" ")[0];
     }
 
     public void setTitle(String name) {
