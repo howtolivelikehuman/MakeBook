@@ -40,16 +40,22 @@ public class EditBookActivity  extends PageActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
+            case R.id.action_edit_done :
+                // 페이지 추가
+                System.out.println("책 수정 완료");
+                finish();
+                Toast.makeText(getApplicationContext(),"페이지 수정 완료", Toast.LENGTH_LONG).show();
+                return true;
             case R.id.action_create_prev :
                 // 페이지 추가
-                System.out.println("페이지 추가");
+                System.out.println("이전 페이지 추가");
                 addPageBeforeIdx();
                 updateButtonState();
                 Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_create_next :
                 // 페이지 추가
-                System.out.println("페이지 추가");
+                System.out.println("이후 페이지 추가");
                 addPageAfterIdx();
                 updateButtonState();
                 Toast.makeText(getApplicationContext(),"페이지 생성", Toast.LENGTH_LONG).show();
