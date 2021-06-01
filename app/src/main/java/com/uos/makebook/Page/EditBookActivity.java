@@ -41,9 +41,10 @@ public class EditBookActivity  extends PageActivity {
         switch (item.getItemId())
         {
             case R.id.action_edit_done :
-                // 페이지 추가
+                // 페이지 수정
                 System.out.println("책 수정 완료");
-                finish();
+                //finish();
+                //종료하지 말고 그냥 디비에 수정된 페이지 반영하고 flipper는 계속 떠있도록 하고, 뒤로가기 하면 페이지모아보기 뜨도록 하면 좋을 것 같은데 어떤가요?(다현)
                 Toast.makeText(getApplicationContext(),"페이지 수정 완료", Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_create_prev :
