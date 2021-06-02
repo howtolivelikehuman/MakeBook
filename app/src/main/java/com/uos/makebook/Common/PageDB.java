@@ -26,9 +26,10 @@ public class PageDB implements DB{
 
         //ID는 AUTO INCREMENT
         val.put(Constant.COLUMN_PAGE[1], page.getBookId());
-        val.put(Constant.COLUMN_PAGE[2], page.getContents());
-        val.put(Constant.COLUMN_PAGE[3], page.getNextPage());
-        val.put(Constant.COLUMN_PAGE[4], page.getIsHead());
+        val.put(Constant.COLUMN_PAGE[2], page.getText());
+        val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
+        val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
+        val.put(Constant.COLUMN_PAGE[5], page.getIsHead());
 
         //insert시 PK return
         return database.insert(Constant.TABLE_NAME[1], null, val);
@@ -47,12 +48,13 @@ public class PageDB implements DB{
         DatabaseHelper.println("page 업데이트");
         ContentValues val = new ContentValues();
 
-        val.put(Constant.COLUMN_PAGE[2], page.getContents());
-        val.put(Constant.COLUMN_PAGE[3], page.getNextPage());
-        val.put(Constant.COLUMN_PAGE[4], page.getIsHead());
+        val.put(Constant.COLUMN_PAGE[2], page.getText());
+        val.put(Constant.COLUMN_PAGE[3], Function.getByteArrayFromDrawable(page.getImg()));
+        val.put(Constant.COLUMN_PAGE[4], page.getNextPage());
+        val.put(Constant.COLUMN_PAGE[5], page.getIsHead());
 
         String whereClause = Constant.COLUMN_PAGE[0] + "=?";
-        String[] whereArgs = {Long.toString(page.getPageId())};
+        String[] whereArgs = {Long.toString(page.getId())};
 
         //update 된 수 return
         return database.update(Constant.TABLE_NAME[1], val, whereClause, whereArgs);
@@ -69,11 +71,12 @@ public class PageDB implements DB{
         //getColumnIndex(컬럼명)으로 몇번 컬럼인지 알아와서 넣어도 되고
         //b.setId(cursor.getInt(cursor.getColumnIndex(Constant.COLUMN_BOOKLIST[0])));
         //그냥 하드코딩해도됨
-        p.setPageId(cursor.getLong(0));
+        p.setId(cursor.getLong(0));
         p.setBookId(cursor.getLong(1));
-        p.setContents(cursor.getString(2));
-        p.setNextPage(cursor.getLong(3));
-        p.setIsHead(cursor.getInt(4));
+        p.setText(cursor.getString(2));
+        p.setImg(Function.getBitmapFromByteArray(cursor.getBlob(3)));
+        p.setNextPage(cursor.getLong(4));
+        p.setIsHead(cursor.getInt(5));
         return p;
     }
 
