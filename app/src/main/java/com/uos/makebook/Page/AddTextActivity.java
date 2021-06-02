@@ -70,7 +70,7 @@ public class AddTextActivity extends AppCompatActivity {
 
         sizeText.setOnClickListener(v -> {
             NumberPicker picker = new NumberPicker(this);
-            picker.setMaxValue(100);
+            picker.setMaxValue(300);
             picker.setMinValue(5);
             picker.setValue(textSize);
 

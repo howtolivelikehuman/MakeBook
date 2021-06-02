@@ -27,6 +27,7 @@ public class Page implements DTO, Parcelable {
     long nextPage; // 연결리스트
     int isHead; // head node 인지 판별
     ArrayList<ElementData> elements; // 페이지에 있는 객체들의 리스트
+    PageUpdateEventListener pageUpdateEventListener;
 
     public long getPageId() {
         return id;
@@ -34,6 +35,10 @@ public class Page implements DTO, Parcelable {
 
     public void setPageId(long id) {
         this.id = id;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public Page(Parcel in){
@@ -59,6 +64,10 @@ public class Page implements DTO, Parcelable {
         nextPage = in.readLong();
         isHead = in.readInt();
         parseContents();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     //Page -> Parcel
@@ -76,13 +85,16 @@ public class Page implements DTO, Parcelable {
     }
 
     public String getContents() {
-        updateContents();
         return contents;
     }
 
     public void setContents(String contents) {
         this.contents = contents;
         parseContents();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public long getBookId() {
@@ -91,6 +103,10 @@ public class Page implements DTO, Parcelable {
 
     public void setBookId(long id) {
         this.book_id = id;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public long getNextPage() {
@@ -99,6 +115,10 @@ public class Page implements DTO, Parcelable {
 
     public void setNextPage(long nextPage) {
         this.nextPage = nextPage;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public int getIsHead() {
@@ -107,6 +127,10 @@ public class Page implements DTO, Parcelable {
 
     public void setIsHead(int isHead) {
         this.isHead = isHead;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public Page() {
@@ -191,6 +215,10 @@ public class Page implements DTO, Parcelable {
         }
 
         contents = jsonArray.toString();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public void drawElements(Canvas canvas) {
@@ -211,6 +239,15 @@ public class Page implements DTO, Parcelable {
     public void addText(String value, int fontSize, int fontColor) {
         elements.add(new TextData(value, fontSize, fontColor));
         updateContents();
+    }
+
+    public void addImage(String src) {
+        elements.add(new ImageData(src));
+        updateContents();
+    }
+
+    public void setPageUpdateEventListener(PageUpdateEventListener listener) {
+        pageUpdateEventListener = listener;
     }
 }
 
