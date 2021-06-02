@@ -110,9 +110,9 @@ public class PageActivity extends AppCompatActivity {
     public void initialize(){ // head와 첫 페이지 추가
         System.out.println("initialize");
 
-        Page head = new Page(book_id, "0",null,0, 1);
-        Page firstPage = new Page(book_id, "1",null,0, 0);
-        long head_pk = pageDB.insert(head); head.setId(head_pk);
+        Page head = new Page(book_id, "[]", 0, 1);
+        Page firstPage = new Page(book_id, "[]", 0, 0);
+        long head_pk = pageDB.insert(head); head.setPageId(head_pk);
         long first_pk = pageDB.insert(firstPage);
         head.setNextPage(first_pk);
         pageDB.update(head);
@@ -135,7 +135,7 @@ public class PageActivity extends AppCompatActivity {
 
         while(nextPage != 0 && !pageList.isEmpty()){ // nextPage 따라가면서 pageList 정렬
             for(int i=0; i<pageList.size(); i++){
-                if(pageList.get(i).getId() != nextPage)
+                if(pageList.get(i).getPageId() != nextPage)
                     continue;
                 sortedPageList.add(pageList.get(i));
                 nextPage = pageList.get(i).getNextPage();
@@ -148,7 +148,7 @@ public class PageActivity extends AppCompatActivity {
     }
 
     public Page getHead(){
-        String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[5]};
+        String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[4]};
         String[] selectionArgs = {Long.toString(book_id), Integer.toString(1)};
 
         ArrayList<Page> headList = pageDB.select(selection, selectionArgs); // head 데려오기
@@ -164,12 +164,8 @@ public class PageActivity extends AppCompatActivity {
 
         flipper.removeAllViews();
         for(int i=0; i<pageList.size(); i++){
-            Page pageTemp = pageList.get(i);
-            View PageView = View.inflate(this, R.layout.page_bookpage_page, null);
-            // todo : 이미지를 설정해야함
-            TextView text = PageView.findViewById(R.id.page_text);
-            text.setText(pageTemp.text);
-            flipper.addView(PageView);
+            Page currentPage = pageList.get(i);
+            flipper.addView(new PageCanvas(this, currentPage));
         };
 
         for(int i=0; i<page_idx; i++) { // 원래 보던 위치로 되돌려놓기
@@ -188,7 +184,7 @@ public class PageActivity extends AppCompatActivity {
         }else{
             current_page = pageList.get(page_idx-1);
         }
-        new_page = new Page(book_id, "생성", null, 0, 0);
+        new_page = new Page(book_id, "[]", 0, 0);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
 
@@ -203,7 +199,7 @@ public class PageActivity extends AppCompatActivity {
     public void addPageAfterIdx(){ // 다음 페이지 추가
         System.out.println("EditBookActivity.addPageAfterIdx");
         Page current_page, new_page;
-        new_page = new Page(book_id, "생성", null, 0, 0);
+        new_page = new Page(book_id, "[]", 0, 0);
         current_page = pageList.get(page_idx);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
@@ -229,7 +225,7 @@ public class PageActivity extends AppCompatActivity {
         Page deletePage = pageList.get(page_idx);
         prevPage.nextPage = deletePage.nextPage;
         pageDB.update(prevPage);
-        int num = pageDB.delete((int)deletePage.getId()); // pk long으로 통일하면 안될까욤?-? (희은)
+        int num = pageDB.delete((int)deletePage.getPageId()); // pk long으로 통일하면 안될까욤?-? (희은)
 
         setPageList();
         if(page_idx == pageList.size()){
