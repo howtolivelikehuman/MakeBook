@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
 
 public class PageActivity extends AppCompatActivity {
-    int page_idx = 0; // 현재 보고있는 페이지
 
     //book
     Book book;
@@ -39,11 +38,12 @@ public class PageActivity extends AppCompatActivity {
     Menu menu;
 
     ArrayList<Page> pageList;
+    int page_idx; // 현재 보고있는 페이지
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("EditBookActivity.onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_bookpage);
 
@@ -51,14 +51,11 @@ public class PageActivity extends AppCompatActivity {
         pageDB = new PageDB(getApplicationContext());
 
         //인텐트로 값 받아오기
-        Intent editIntent = getIntent();
-
-        /***List에서 Parcelable로 Book 객체 자체를 넘기기 때문에, 코드부분 수정합니다!***/
-        //book_id = editIntent.getIntExtra("Id", -1);
-        //book_name = editIntent.getStringExtra("Name");
-        book = editIntent.getParcelableExtra("book");
+        Intent intent = getIntent();
+        book = intent.getParcelableExtra("book");
         book_id = book.getId();
         book_name = book.getTitle();
+        page_idx = intent.getIntExtra("list_idx", -1);
 
 
 
@@ -176,6 +173,7 @@ public class PageActivity extends AppCompatActivity {
         }
     }
 
+
     public void addPageBeforeIdx(){ // 이전 페이지 추가
         System.out.println("EditBookActivity.addPageBeforeIdx");
         Page current_page, new_page;
@@ -197,6 +195,7 @@ public class PageActivity extends AppCompatActivity {
         System.out.println(page_idx);
     }
 
+
     public void addPageAfterIdx(){ // 다음 페이지 추가
         System.out.println("EditBookActivity.addPageAfterIdx");
         Page current_page, new_page;
@@ -211,6 +210,7 @@ public class PageActivity extends AppCompatActivity {
         setPageList();
         System.out.println(page_idx);
     }
+
 
     public void removePageFromDB(){
         System.out.println("EditBookActivity.removePageFromDB");

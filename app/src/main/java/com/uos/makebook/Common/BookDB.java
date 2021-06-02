@@ -85,6 +85,24 @@ public class BookDB implements DB {
         return books;
     }
 
+    public Book selectById(Long id){
+        Book book = null;
+        String query = "SELECT * FROM  " + Constant.TABLE_NAME[0] + " WHERE ID = " + id;
+        Cursor cursor = database.rawQuery(query, null);
+
+        if(cursor.getCount() > 0){
+            cursor.moveToNext();
+            book = new Book();
+            book.setId(cursor.getLong(0));
+            book.setTitle(cursor.getString(1));
+            book.setWriter(cursor.getString(2));
+            book.setCover(Function.getBitmapFromByteArray(cursor.getBlob(3)));
+            book.setCreatedate(cursor.getString(4));
+        }
+        cursor.close();
+        return book;
+    }
+
     public ArrayList<Book> select(String[] column, String[] data){ // 여러 조건을 사용할 수 있는 select문
         DatabaseHelper.println("Book 조회");
         ArrayList<Book> books = new ArrayList<Book>();
@@ -114,7 +132,7 @@ public class BookDB implements DB {
                 b.setTitle(cursor.getString(1));
                 b.setWriter(cursor.getString(2));
                 b.setCover(Function.getBitmapFromByteArray(cursor.getBlob(3)));
-                b.setCreatedate(cursor.getString(3));
+                b.setCreatedate(cursor.getString(4));
                 books.add(b);
             }
         }

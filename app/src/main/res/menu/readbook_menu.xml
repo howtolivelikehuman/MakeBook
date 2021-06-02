@@ -2,19 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_read_done"
+        android:title="완료"
+        app:showAsAction="always"
+        />
+    <item
         android:id="@+id/record"
         android:title="녹음하기"
         android:icon="@drawable/mic"
         app:showAsAction="always"
         />
-    <group android:id="@+id/group_delete">
-        <item
-            android:id="@+id/playThis"
-            android:title="이 페이지 재생하기"
-            />
+    <item
+        android:id="@+id/playThis"
+        android:title="이 페이지 재생하기"
+        android:icon="@drawable/play"
+        app:showAsAction="always"
+        />
+    <group android:id="@+id/group_play">
         <item
             android:id="@+id/playAll"
             android:title="전체 페이지 재생하기"
+            />
+        <item
+            android:id="@+id/deleteThis"
+            android:title="해당 페이지 녹음 삭제"
+            />
+        <item
+            android:id="@+id/deleteAll"
+            android:title="전체 페이지 녹음 삭제"
             />
     </group>
 </menu>

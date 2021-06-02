@@ -12,6 +12,8 @@ public class Book implements DTO, Parcelable {
     String writer;
     String createdate;
     Bitmap cover;
+    int list_idx; //페이지 모아보기에서 클릭된 페이지의 pos
+
 
     public Book(){}
 
@@ -52,7 +54,7 @@ public class Book implements DTO, Parcelable {
     }
 
     public void setCreatedate(String createdate) {
-        this.createdate = createdate;
+        this.createdate = createdate.split(" ")[0];
     }
 
     public void setTitle(String name) {
@@ -65,6 +67,14 @@ public class Book implements DTO, Parcelable {
 
     public void setCover(Bitmap cover) {
         this.cover = cover;
+    }
+
+    public int getListIdx() {
+        return list_idx;
+    }
+
+    public void setListIdx(int list_idx) {
+        this.list_idx = list_idx;
     }
 
     public static final Parcelable.Creator<Book> CREATOR = new Parcelable.Creator<Book>(){
@@ -83,6 +93,7 @@ public class Book implements DTO, Parcelable {
         writer = in.readString();
         createdate = in.readString();
         cover = in.readParcelable(Bitmap.class.getClassLoader());
+        list_idx = in.readInt();
     }
     @Override
     public int describeContents() {
@@ -96,5 +107,6 @@ public class Book implements DTO, Parcelable {
         parcel.writeString(writer);
         parcel.writeString(createdate);
         parcel.writeParcelable(cover,i);
+        parcel.writeInt(list_idx);
     }
 }
