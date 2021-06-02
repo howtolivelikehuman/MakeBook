@@ -108,6 +108,9 @@ public class PageCanvas extends View {
                 this.invalidate();
                 break;
 
+            case MotionEvent.ACTION_UP:
+                page.updateContents();
+
             default:
                 used = false;
         }

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
 
 public class PageActivity extends AppCompatActivity {
-    int page_idx = 0; // 현재 보고있는 페이지
 
     //book
     Book book;
@@ -30,6 +29,8 @@ public class PageActivity extends AppCompatActivity {
 
     //DB
     DB pageDB;
+    // 페이지가 업데이트 되었을 때 실행될 이벤트 리스너 (주로 DB 업데이트를 함.)
+    PageUpdateEventListener pageUpdateEventListener;
 
     // layout
     Button prev_button, next_button;
@@ -39,26 +40,25 @@ public class PageActivity extends AppCompatActivity {
     Menu menu;
 
     ArrayList<Page> pageList;
+    int page_idx; // 현재 보고있는 페이지
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("EditBookActivity.onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_bookpage);
 
         //DB setting
         pageDB = new PageDB(getApplicationContext());
+        pageUpdateEventListener = sender -> pageDB.update(sender);
 
         //인텐트로 값 받아오기
-        Intent editIntent = getIntent();
-
-        /***List에서 Parcelable로 Book 객체 자체를 넘기기 때문에, 코드부분 수정합니다!***/
-        //book_id = editIntent.getIntExtra("Id", -1);
-        //book_name = editIntent.getStringExtra("Name");
-        book = editIntent.getParcelableExtra("book");
+        Intent intent = getIntent();
+        book = intent.getParcelableExtra("book");
         book_id = book.getId();
         book_name = book.getTitle();
+        page_idx = intent.getIntExtra("list_idx", -1);
 
 
 
@@ -106,6 +106,11 @@ public class PageActivity extends AppCompatActivity {
         }
         pageList.remove(0); // head 제거
 
+        // Update시 DB에 반영하기 위해 listener 적용
+        for (Page p : pageList) {
+            p.setPageUpdateEventListener(pageUpdateEventListener);
+        }
+
         sortPageList(); // page 순서 정하기
         makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
     }
@@ -119,6 +124,9 @@ public class PageActivity extends AppCompatActivity {
         long first_pk = pageDB.insert(firstPage);
         head.setNextPage(first_pk);
         pageDB.update(head);
+
+        head.setPageUpdateEventListener(pageUpdateEventListener);
+        firstPage.setPageUpdateEventListener(pageUpdateEventListener);
     }
 
     public void getPageListFromDB(){ // book_id에 해당하는 모든 page 가져오기
@@ -176,6 +184,7 @@ public class PageActivity extends AppCompatActivity {
         }
     }
 
+
     public void addPageBeforeIdx(){ // 이전 페이지 추가
         System.out.println("EditBookActivity.addPageBeforeIdx");
         Page current_page, new_page;
@@ -189,6 +198,7 @@ public class PageActivity extends AppCompatActivity {
         new_page = new Page(book_id, "[]", 0, 0);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
+        new_page.setPageUpdateEventListener(pageUpdateEventListener);
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
@@ -196,6 +206,7 @@ public class PageActivity extends AppCompatActivity {
         setPageList();
         System.out.println(page_idx);
     }
+
 
     public void addPageAfterIdx(){ // 다음 페이지 추가
         System.out.println("EditBookActivity.addPageAfterIdx");
@@ -207,10 +218,12 @@ public class PageActivity extends AppCompatActivity {
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
+        new_page.setPageUpdateEventListener(pageUpdateEventListener);
 
         setPageList();
         System.out.println(page_idx);
     }
+
 
     public void removePageFromDB(){
         System.out.println("EditBookActivity.removePageFromDB");
