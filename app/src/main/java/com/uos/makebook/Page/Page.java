@@ -14,6 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.EventListener;
+
+interface PageUpdateEventListener extends EventListener {
+    void onPageUpdate(Page sender);
+}
 
 public class Page implements DTO, Parcelable {
     long id = 0; // 어차피 insert 시에는 auto_increment
@@ -50,22 +55,19 @@ public class Page implements DTO, Parcelable {
 
     public void readFromParcel(Parcel in){
         book_id = in.readLong();
-        text = in.readString();
-        img = in.readParcelable(Bitmap.class.getClassLoader());
+        contents = in.readString();
         nextPage = in.readLong();
         isHead = in.readInt();
-        //page_img = in.readParcelable(Bitmap.class.getClassLoader());
+        parseContents();
     }
 
     //Page -> Parcel
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(book_id);
-        parcel.writeString(text);
-        parcel.writeParcelable(img,i);
+        parcel.writeString(contents);
         parcel.writeLong(nextPage);
         parcel.writeInt(isHead);
-        //parcel.writeParcelable(page_img,i);
     }
 
     @Override
@@ -173,6 +175,11 @@ public class Page implements DTO, Parcelable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (contents == null) {
+                System.out.println("parseContents: The contents was null.");
+            } else {
+                System.out.println("parseContents: The contents was " + contents);
+            }
         }
     }
 

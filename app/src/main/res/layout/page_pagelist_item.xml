@@ -16,12 +16,11 @@
         android:gravity="center"
         >
 
-        <TextView
-            android:id="@+id/pageText"
+        <ImageView
+            android:id="@+id/pageView"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:src="@drawable/default_cover"
-            android:scaleType="fitCenter"/>
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true" />
 
     </LinearLayout>
 

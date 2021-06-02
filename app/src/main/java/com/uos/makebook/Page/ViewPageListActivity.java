@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.content.Intent;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import com.uos.makebook.Common.DB;
@@ -62,11 +63,15 @@ public class ViewPageListActivity extends AppCompatActivity {
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
         recyclerView.setLayoutManager(layoutManager);
 
+        // pageListAdapter에서 bitmap의 크기를 결정하는데 사용됨.
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        pagelistAdapter.setScreenSize(metrics);
+
         for(int i=0; i<pageList.size(); i++) {
             Page pageTemp = pageList.get(i);
             pagelistAdapter.addItem(pageTemp);
-        };
-
+        }
 
         //각 페이지 아이템에 클릭리스너 붙이기
         pagelistAdapter.setOnItemClickListener(new PageListAdapter.OnItemClickListener() {
@@ -114,9 +119,9 @@ public class ViewPageListActivity extends AppCompatActivity {
     public void initialize(){ // head와 첫 페이지 추가
         System.out.println("initialize");
 
-        Page head = new Page(book_id, "0",null,0, 1);
-        Page firstPage = new Page(book_id, "1",null,0, 0);
-        long head_pk = pageDB.insert(head); head.setId(head_pk);
+        Page head = new Page(book_id, "[]", 0, 1);
+        Page firstPage = new Page(book_id, "[]",0, 0);
+        long head_pk = pageDB.insert(head); head.setPageId(head_pk);
         long first_pk = pageDB.insert(firstPage);
         head.setNextPage(first_pk);
         pageDB.update(head);
@@ -129,7 +134,7 @@ public class ViewPageListActivity extends AppCompatActivity {
     }
 
     public Page getHead(){
-        String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[5]};
+        String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[4]};
         String[] selectionArgs = {Long.toString(book_id), Integer.toString(1)};
 
         ArrayList<Page> headList = pageDB.select(selection, selectionArgs); // head 데려오기
@@ -151,7 +156,7 @@ public class ViewPageListActivity extends AppCompatActivity {
 
         while(nextPage != 0 && !pageList.isEmpty()){ // nextPage 따라가면서 pageList 정렬
             for(int i=0; i<pageList.size(); i++){
-                if(pageList.get(i).getId() != nextPage)
+                if(pageList.get(i).getPageId() != nextPage)
                     continue;
                 sortedPageList.add(pageList.get(i));
                 nextPage = pageList.get(i).getNextPage();

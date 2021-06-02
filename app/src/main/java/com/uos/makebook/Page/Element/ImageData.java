@@ -46,6 +46,7 @@ public class ImageData extends ElementData {
         JSONObject json = super.toJSON();
 
         try {
+            json.put("kind", "image");
             json.put("src", src);
             return json;
         } catch (JSONException e) {
