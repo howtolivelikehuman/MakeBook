@@ -14,11 +14,13 @@ public class Constant {
     public static final int READ_REQUEST = 300;
     public static final int MAKE_REQUEST = 400;
     public static final int DELETE_REQUEST = 500;
+    public static final int ADD_TEXT_REQUEST = 600;
+    public static final int ADD_IMAGE_REQUEST = 700;
 
     public static final String DATABASE_NAME = "MAKEBOOK";
     public static final String[] TABLE_NAME = {"BOOKLIST", "PAGE"};
     public static final String[] COLUMN_BOOKLIST = {"ID", "TITLE", "WRITER", "IMAGE", "CREATEDATE"};
-    public static final String[] COLUMN_PAGE = {"ID", "BOOKID", "TEXT", "IMAGE", "NEXTPAGE", "ISHEAD"};
+    public static final String[] COLUMN_PAGE = {"ID", "BOOKID", "CONTENTS", "NEXTPAGE", "ISHEAD"};
 
     //책 테이블 생성
     public static final String CREATE_TABLE_BOOKLIST = "CREATE TABLE " + TABLE_NAME[0] + "(" +
@@ -33,11 +35,10 @@ public class Constant {
             COLUMN_PAGE[0] + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COLUMN_PAGE[1] + " INTEGER, " +
             COLUMN_PAGE[2] + " TEXT, " +
-            COLUMN_PAGE[3] + " BLOB, " +
+            COLUMN_PAGE[3] + " INTEGER, " +
             COLUMN_PAGE[4] + " INTEGER, " +
-            COLUMN_PAGE[5] + " INTEGER, " +
             "FOREIGN KEY " + "(" + COLUMN_PAGE[1] + ") " +
             "REFERENCES " + TABLE_NAME[0] + "(" + COLUMN_BOOKLIST[0] + ")" +
-            "FOREIGN KEY " + "(" + COLUMN_PAGE[4] + ") " +
+            "FOREIGN KEY " + "(" + COLUMN_PAGE[3] + ") " +
             "REFERENCES " + TABLE_NAME[1] + "(" + COLUMN_BOOKLIST[0] + "))";
 }

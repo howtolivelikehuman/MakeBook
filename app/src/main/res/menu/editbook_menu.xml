@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_create_prev"
-        android:title="이전 페이지 생성"
+        android:id="@+id/action_insert_text"
+        android:title="글 넣기"
+        android:icon="@drawable/text"
+        app:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/action_insert_image"
+        android:title="이미지 넣기"
+        android:icon="@drawable/image"
+        app:showAsAction="always">
+    </item>
+    <item
+        android:id="@+id/action_edit_done"
+        android:title="완료"
+        app:showAsAction="always"
     />
-    <item
-        android:id="@+id/action_create_next"
-        android:title="다음 페이지 생성"
+    <group android:id="@+id/group_play">
+        <item
+            android:id="@+id/action_create_prev"
+            android:title="이전 페이지 생성"
         />
-    <item
-        android:id="@+id/action_delete"
-        android:title="페이지 삭제"
-    />
+        <item
+            android:id="@+id/action_create_next"
+            android:title="다음 페이지 생성"
+            />
+        <item
+            android:id="@+id/action_delete"
+            android:title="페이지 삭제"
+            />
+    </group>
 </menu>
