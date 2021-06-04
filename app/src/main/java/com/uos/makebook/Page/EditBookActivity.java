@@ -117,6 +117,10 @@ public class EditBookActivity  extends PageActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        if (data == null) {
+            return;
+        }
+
         if (requestCode == Constant.ADD_TEXT_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Page current = pageList.get(page_idx);
