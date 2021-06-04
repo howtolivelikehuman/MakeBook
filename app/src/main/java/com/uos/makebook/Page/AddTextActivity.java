@@ -77,7 +77,10 @@ public class AddTextActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(picker);
             builder.setTitle("글자 크기 선택");
-            builder.setPositiveButton("OK", (dialog, which) -> textSize = picker.getValue());
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                textSize = picker.getValue();
+                editText.setTextSize(textSize);
+            });
             builder.setNegativeButton("CANCEL", (dialog, which) -> { });
             builder.create().show();
         });
