@@ -43,11 +43,9 @@ public class TextData extends ElementData {
         generateTextLayout();
 
         Rect bound = new Rect();
-        TextPaint paint = new TextPaint();
-        paint.setTextSize(fontSize);
-        paint.getTextBounds(value, 0, value.length(), bound);
+        textPaint.getTextBounds(value, 0, value.length(), bound);
 
-        setWidth(bound.width());
+        setWidth(bound.width() + RESIZE_BORDER * 2);
         setHeight(bound.height());
     }
 
