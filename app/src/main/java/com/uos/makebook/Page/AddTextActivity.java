@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -68,6 +69,7 @@ public class AddTextActivity extends AppCompatActivity {
 
         colorText.setOnClickListener(v -> colorPicker.show());
 
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         sizeText.setOnClickListener(v -> {
             NumberPicker picker = new NumberPicker(this);
             picker.setMaxValue(300);
@@ -79,7 +81,7 @@ public class AddTextActivity extends AppCompatActivity {
             builder.setTitle("글자 크기 선택");
             builder.setPositiveButton("OK", (dialog, which) -> {
                 textSize = picker.getValue();
-                editText.setTextSize(textSize);
+                editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             });
             builder.setNegativeButton("CANCEL", (dialog, which) -> { });
             builder.create().show();
