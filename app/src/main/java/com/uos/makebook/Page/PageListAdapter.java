@@ -1,5 +1,8 @@
 package com.uos.makebook.Page;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
 
     private ArrayList<Page> pageItems = new ArrayList<Page>(); //adapter에 들어갈 list
     private OnItemClickListener listener = null ;
+    private DisplayMetrics screenSize = null; // ViewHolder에서 비트맵의 사이즈를 정하는데 사용.
 
     @NonNull
     @Override
@@ -54,6 +58,10 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
         pageItems.set(position,item);
     }
 
+    public void setScreenSize(DisplayMetrics info) {
+        screenSize = info;
+    }
+
     //인터페이스에 리스너 연결결
     public void setOnItemClickListener(OnItemClickListener listener){
         this.listener = listener;
@@ -67,7 +75,7 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView textView;
+        ImageView pageView;
         //private ImageView page_image; //페이지 이미지
 
         public ViewHolder(@NonNull View itemView) {
@@ -86,13 +94,16 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
                 }
             });
 
-            textView = itemView.findViewById(R.id.pageText);
+            pageView = itemView.findViewById(R.id.pageView);
         }
 
         //pageItem 구성
         public void setItem(Page item){
-            textView.setText(item.getText());
-            //TODO : 이미지+텍스트
+            Bitmap pageBitmap = Bitmap.createBitmap(screenSize.widthPixels, screenSize.heightPixels, Bitmap.Config.ARGB_8888);
+            Canvas pageCanvas = new Canvas(pageBitmap);
+            item.drawElements(pageCanvas);
+
+            pageView.setImageBitmap(pageBitmap);
         }
     }
 }

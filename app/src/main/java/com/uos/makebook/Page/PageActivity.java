@@ -29,6 +29,8 @@ public class PageActivity extends AppCompatActivity {
 
     //DB
     DB pageDB;
+    // 페이지가 업데이트 되었을 때 실행될 이벤트 리스너 (주로 DB 업데이트를 함.)
+    PageUpdateEventListener pageUpdateEventListener;
 
     // layout
     Button prev_button, next_button;
@@ -49,6 +51,7 @@ public class PageActivity extends AppCompatActivity {
 
         //DB setting
         pageDB = new PageDB(getApplicationContext());
+        pageUpdateEventListener = sender -> pageDB.update(sender);
 
         //인텐트로 값 받아오기
         Intent intent = getIntent();
@@ -103,6 +106,11 @@ public class PageActivity extends AppCompatActivity {
         }
         pageList.remove(0); // head 제거
 
+        // Update시 DB에 반영하기 위해 listener 적용
+        for (Page p : pageList) {
+            p.setPageUpdateEventListener(pageUpdateEventListener);
+        }
+
         sortPageList(); // page 순서 정하기
         makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
     }
@@ -116,6 +124,9 @@ public class PageActivity extends AppCompatActivity {
         long first_pk = pageDB.insert(firstPage);
         head.setNextPage(first_pk);
         pageDB.update(head);
+
+        head.setPageUpdateEventListener(pageUpdateEventListener);
+        firstPage.setPageUpdateEventListener(pageUpdateEventListener);
     }
 
     public void getPageListFromDB(){ // book_id에 해당하는 모든 page 가져오기
@@ -187,6 +198,7 @@ public class PageActivity extends AppCompatActivity {
         new_page = new Page(book_id, "[]", 0, 0);
         new_page.setNextPage(current_page.nextPage);
         long pk = pageDB.insert(new_page); // 새 페이지 삽입
+        new_page.setPageUpdateEventListener(pageUpdateEventListener);
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
@@ -206,6 +218,7 @@ public class PageActivity extends AppCompatActivity {
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
+        new_page.setPageUpdateEventListener(pageUpdateEventListener);
 
         setPageList();
         System.out.println(page_idx);

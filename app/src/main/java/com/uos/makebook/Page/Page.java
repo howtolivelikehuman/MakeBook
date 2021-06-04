@@ -14,6 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.EventListener;
+
+interface PageUpdateEventListener extends EventListener {
+    void onPageUpdate(Page sender);
+}
 
 public class Page implements DTO, Parcelable {
     long id = 0; // 어차피 insert 시에는 auto_increment
@@ -22,6 +27,7 @@ public class Page implements DTO, Parcelable {
     long nextPage; // 연결리스트
     int isHead; // head node 인지 판별
     ArrayList<ElementData> elements; // 페이지에 있는 객체들의 리스트
+    PageUpdateEventListener pageUpdateEventListener;
 
     public long getPageId() {
         return id;
@@ -29,6 +35,10 @@ public class Page implements DTO, Parcelable {
 
     public void setPageId(long id) {
         this.id = id;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public Page(Parcel in){
@@ -50,22 +60,23 @@ public class Page implements DTO, Parcelable {
 
     public void readFromParcel(Parcel in){
         book_id = in.readLong();
-        text = in.readString();
-        img = in.readParcelable(Bitmap.class.getClassLoader());
+        contents = in.readString();
         nextPage = in.readLong();
         isHead = in.readInt();
-        //page_img = in.readParcelable(Bitmap.class.getClassLoader());
+        parseContents();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     //Page -> Parcel
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(book_id);
-        parcel.writeString(text);
-        parcel.writeParcelable(img,i);
+        parcel.writeString(contents);
         parcel.writeLong(nextPage);
         parcel.writeInt(isHead);
-        //parcel.writeParcelable(page_img,i);
     }
 
     @Override
@@ -74,13 +85,16 @@ public class Page implements DTO, Parcelable {
     }
 
     public String getContents() {
-        updateContents();
         return contents;
     }
 
     public void setContents(String contents) {
         this.contents = contents;
         parseContents();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public long getBookId() {
@@ -89,6 +103,10 @@ public class Page implements DTO, Parcelable {
 
     public void setBookId(long id) {
         this.book_id = id;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public long getNextPage() {
@@ -97,6 +115,10 @@ public class Page implements DTO, Parcelable {
 
     public void setNextPage(long nextPage) {
         this.nextPage = nextPage;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public int getIsHead() {
@@ -105,6 +127,10 @@ public class Page implements DTO, Parcelable {
 
     public void setIsHead(int isHead) {
         this.isHead = isHead;
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public Page() {
@@ -173,6 +199,11 @@ public class Page implements DTO, Parcelable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            if (contents == null) {
+                System.out.println("parseContents: The contents was null.");
+            } else {
+                System.out.println("parseContents: The contents was " + contents);
+            }
         }
     }
 
@@ -184,6 +215,10 @@ public class Page implements DTO, Parcelable {
         }
 
         contents = jsonArray.toString();
+
+        if (pageUpdateEventListener != null) {
+            pageUpdateEventListener.onPageUpdate(this);
+        }
     }
 
     public void drawElements(Canvas canvas) {
@@ -204,6 +239,15 @@ public class Page implements DTO, Parcelable {
     public void addText(String value, int fontSize, int fontColor) {
         elements.add(new TextData(value, fontSize, fontColor));
         updateContents();
+    }
+
+    public void addImage(String src) {
+        elements.add(new ImageData(src));
+        updateContents();
+    }
+
+    public void setPageUpdateEventListener(PageUpdateEventListener listener) {
+        pageUpdateEventListener = listener;
     }
 }
 

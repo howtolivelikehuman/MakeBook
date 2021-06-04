@@ -14,6 +14,8 @@ public class Constant {
     public static final int READ_REQUEST = 300;
     public static final int MAKE_REQUEST = 400;
     public static final int DELETE_REQUEST = 500;
+    public static final int ADD_TEXT_REQUEST = 600;
+    public static final int ADD_IMAGE_REQUEST = 700;
 
     public static final String DATABASE_NAME = "MAKEBOOK";
     public static final String[] TABLE_NAME = {"BOOKLIST", "PAGE"};

@@ -31,7 +31,7 @@
         <activity android:name=".Make.MakeCoverActivity"/>
         <activity android:name=".Page.EditBookActivity"/>
         <activity android:name=".Page.ReadBookActivity"/>
-        <activity android:name=".Page.AddTextActivity" android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"/>
+        <activity android:name=".Page.AddTextActivity"/>
         <activity android:name=".Page.ViewPageListActivity"/>
     </application>
 

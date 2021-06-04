@@ -88,6 +88,7 @@ public class TextData extends ElementData {
         JSONObject json = super.toJSON();
 
         try {
+            json.put("kind", "text");
             json.put("value", text);
             json.put("fontSize", fontSize);
             json.put("fontColor", fontColor);
