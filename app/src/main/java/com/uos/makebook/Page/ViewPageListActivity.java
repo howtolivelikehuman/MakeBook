@@ -57,7 +57,7 @@ public class ViewPageListActivity extends AppCompatActivity {
         book_name = book.getTitle();
 
         // DB로부터 값 받아오기 -> pageList에 넣기
-        setPageList();
+        pageList = PageMethod.setPageList(pageDB, book_id);
 
         recyclerView = findViewById(R.id.recyPagelist);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);
@@ -113,7 +113,7 @@ public class ViewPageListActivity extends AppCompatActivity {
     }
 
 
-    public void setPageList(){
+   /* public void setPageList(){
         System.out.println("setPageList");
         getPageListFromDB();
         if(pageList.size()==0){ // page 없으면 추가 후 다시 받아오기
@@ -175,6 +175,5 @@ public class ViewPageListActivity extends AppCompatActivity {
         }
 
         pageList = sortedPageList;
-    }
-
+    }*/
 }

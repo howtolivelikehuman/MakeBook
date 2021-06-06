@@ -61,7 +61,6 @@ public class PageActivity extends AppCompatActivity {
         page_idx = intent.getIntExtra("list_idx", -1);
 
 
-
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,6 +73,7 @@ public class PageActivity extends AppCompatActivity {
 
         // DB로부터 값 받아오기
         setPageList();
+        makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
         updateButtonState();
 
         // 이전 버튼
@@ -202,7 +202,6 @@ public class PageActivity extends AppCompatActivity {
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
-
         setPageList();
         System.out.println(page_idx);
     }
@@ -219,7 +218,6 @@ public class PageActivity extends AppCompatActivity {
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
         new_page.setPageUpdateEventListener(pageUpdateEventListener);
-
         setPageList();
         System.out.println(page_idx);
     }

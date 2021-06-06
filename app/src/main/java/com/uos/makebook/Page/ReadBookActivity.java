@@ -222,6 +222,8 @@ public class ReadBookActivity extends PageActivity {
         {
             case R.id.action_read_done :
                 finish();
+                return true;
+
             case R.id.record :
                 // 녹음 시작 / 정지
                 if(isRecording) {
@@ -238,7 +240,8 @@ public class ReadBookActivity extends PageActivity {
                     playRecord(-1);
                 }
                 return true;
-            case R.id.viewPagelist :
+
+            case R.id.action_view_pagelist :
                 // 페이지 모아보기
                 Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
                 book.setCover(null);
