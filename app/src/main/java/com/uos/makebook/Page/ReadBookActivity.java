@@ -53,7 +53,9 @@ public class ReadBookActivity extends PageActivity {
 
     private String makeFolder(){ // 폴더 없으면 생성하고 path return
         String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
+        File myDir = new File(strSDpath+"/Book");
+        myDir.mkdir();
+        myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
         myDir.mkdir(); // todo : sdk 버전 30에서 권한 오류남
         return myDir.getAbsolutePath();
     }

@@ -24,10 +24,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //안드로이드 권한 질의
-        AutoPermissions.Companion.loadAllPermissions(this,101);
-        permissionCheck();
-
         setContentView(R.layout.main_splash);
         logo = findViewById(R.id.imageLogo);
         icon = findViewById(R.id.imageIcon);
@@ -36,12 +32,7 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    public void permissionCheck(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1);
-        }
-    }
+
 
     private void StartAnimations(){
         icon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.image_bounce));

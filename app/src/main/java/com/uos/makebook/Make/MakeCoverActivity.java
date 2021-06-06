@@ -133,7 +133,9 @@ public class MakeCoverActivity extends AppCompatActivity {
             }
         });
 
+
         //굵기
+        border.setProgress(paintBoard.mInvalidateExtraBorder);
         border.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

@@ -1,9 +1,11 @@
 package com.uos.makebook.MainList;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -31,9 +33,12 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pedro.library.AutoPermissions;
 import com.uos.makebook.Common.BookDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
@@ -66,13 +71,15 @@ public class BookListActivity extends AppCompatActivity{
     PopupMenu popUp;
     AlertDialog finalAsk;
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.mainlist_booklist);
+
+        //안드로이드 권한 질의
+        AutoPermissions.Companion.loadAllPermissions(this,101);
+        permissionCheck();
 
         //DB setting
         bookDB = new BookDB(getApplicationContext());
@@ -248,7 +255,9 @@ public class BookListActivity extends AppCompatActivity{
 
     private String makeFolder(long book_id){
         String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
+        File myDir = new File(strSDpath+"/Book");
+        myDir.mkdir();
+        myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
         myDir.mkdir();
         return myDir.getAbsolutePath();
     }
@@ -323,6 +332,13 @@ public class BookListActivity extends AppCompatActivity{
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void permissionCheck(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1);
         }
     }
 }
