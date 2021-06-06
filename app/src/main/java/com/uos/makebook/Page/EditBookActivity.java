@@ -42,14 +42,8 @@ public class EditBookActivity  extends PageActivity {
 
     @Override
     public void onBackPressed(){
-        /*
-        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
-        book.setCover(null);
-        intent.putExtra("book",book);
-        intent.putExtra("mode", "EDIT_MODE");
-        startActivityForResult(intent, Constant.EDIT_REQUEST);
-         */
         Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
+        startActivity(intent);
         super.onBackPressed();
     }
 
@@ -92,7 +86,7 @@ public class EditBookActivity  extends PageActivity {
                 book.setCover(null);
                 tmpIntent.putExtra("book",book);
                 tmpIntent.putExtra("mode", "EDIT_MODE");
-                startActivityForResult(tmpIntent, Constant.EDIT_REQUEST);
+                startActivity(tmpIntent);
                 System.out.println("페이지 모아보기");
                 finish();
                 return true;

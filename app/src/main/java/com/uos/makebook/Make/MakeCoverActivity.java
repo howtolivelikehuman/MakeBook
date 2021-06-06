@@ -24,6 +24,7 @@ import com.uos.makebook.Common.DB;
 import com.uos.makebook.MainList.Book;
 import com.uos.makebook.Page.EditBookActivity;
 import com.uos.makebook.R;
+import com.uos.makebook.MainList.BookListActivity;
 
 import petrov.kristiyan.colorpicker.ColorPicker;
 
@@ -161,7 +162,9 @@ public class MakeCoverActivity extends AppCompatActivity {
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(Constant.MAKECOVER_RESULT_EXIT);
+                //setResult(Constant.MAKECOVER_RESULT_EXIT);
+                Intent nextIntent = new Intent(getApplicationContext(), BookListActivity.class); //추가
+                startActivity(nextIntent); //추가
                 finish();
             }
         });

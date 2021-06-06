@@ -39,11 +39,6 @@ public class ReadBookActivity extends PageActivity {
         folderPath = makeFolder();
     }
 
-    public void onBackPressed(){
-        Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
-        super.onBackPressed();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         // read menu 연결
@@ -249,7 +244,7 @@ public class ReadBookActivity extends PageActivity {
                 book.setCover(null);
                 tmpIntent.putExtra("book",book);
                 tmpIntent.putExtra("mode", "READ_MODE");
-                startActivityForResult(tmpIntent, Constant.READ_REQUEST);
+                startActivity(tmpIntent);
                 finish();
                 return true;
             case R.id.playAll :

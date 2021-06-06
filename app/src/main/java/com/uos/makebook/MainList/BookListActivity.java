@@ -71,8 +71,6 @@ public class BookListActivity extends AppCompatActivity{
         getSupportActionBar().setTitle(R.string.app_name);
 
 
-
-
         recyclerView = findViewById(R.id.recyBooklist);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,RecyclerView.VERTICAL,false);
         recyclerView.setLayoutManager(layoutManager);
@@ -149,8 +147,9 @@ public class BookListActivity extends AppCompatActivity{
                         book.setCover(null);
                         intent.putExtra("book",book);
                         intent.putExtra("mode", "READ_MODE");
-                        startActivityForResult(intent, Constant.READ_REQUEST);
+                        startActivity(intent);
                         popUp.dismiss();
+                        //finish(); //추가
                         break;
                     }
                     //수정하기
@@ -159,13 +158,13 @@ public class BookListActivity extends AppCompatActivity{
                         book.setCover(null);
                         intent.putExtra("book",book);
                         intent.putExtra("mode", "EDIT_MODE");
-                        startActivityForResult(intent,Constant.EDIT_REQUEST);
+                        startActivity(intent);
                         popUp.dismiss();
+                        finish(); //추가
                         break;
                     }
                     //삭제하기
                     case R.id.popuptv_delete : {
-
                         onDeleteFinalAsk(book.getId());
                         popUp.dismiss();
                         break;
@@ -241,7 +240,9 @@ public class BookListActivity extends AppCompatActivity{
             case R.id.action_create2:
                 Toast.makeText(getApplicationContext(), "책 만들기를 시작합니다", Toast.LENGTH_LONG).show();
                 Intent nextIntent = new Intent(getApplicationContext(), MakeCoverActivity.class);
-                startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
+                //startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
+                startActivity(nextIntent);
+                finish();
                 return true;
 
             default:
