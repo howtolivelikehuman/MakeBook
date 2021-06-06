@@ -1,6 +1,7 @@
 package com.uos.makebook.Page;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.uos.makebook.Common.Constant;
+import com.uos.makebook.MainList.BookListActivity;
 import com.uos.makebook.R;
 
 import java.io.File;
@@ -34,6 +37,18 @@ public class ReadBookActivity extends PageActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         folderPath = makeFolder();
+    }
+
+    public void onBackPressed(){
+        /*
+        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+        book.setCover(null);
+        intent.putExtra("book",book);
+        intent.putExtra("mode", "EDIT_MODE");
+        startActivityForResult(intent, Constant.EDIT_REQUEST);
+         */
+        Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
+        super.onBackPressed();
     }
 
     @Override
@@ -246,6 +261,16 @@ public class ReadBookActivity extends PageActivity {
             case R.id.deleteAll :
                 // 전체 페이지 녹음 삭제
                 deleteAll();
+                return true;
+            case R.id.viewPagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "READ_MODE");
+                startActivityForResult(tmpIntent, Constant.READ_REQUEST);
+                System.out.println("페이지 모아보기");
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

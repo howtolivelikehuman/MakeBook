@@ -31,5 +31,9 @@
             android:id="@+id/deleteAll"
             android:title="전체 페이지 녹음 삭제"
             />
+        <item
+            android:id="@+id/viewPagelist"
+            android:title="페이지 모아보기"
+            />
     </group>
 </menu>

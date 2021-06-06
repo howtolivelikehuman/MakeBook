@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.R;
+import com.uos.makebook.MainList.BookListActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -41,11 +42,14 @@ public class EditBookActivity  extends PageActivity {
 
     @Override
     public void onBackPressed(){
+        /*
         Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
         book.setCover(null);
         intent.putExtra("book",book);
         intent.putExtra("mode", "EDIT_MODE");
         startActivityForResult(intent, Constant.EDIT_REQUEST);
+         */
+        Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
         super.onBackPressed();
     }
 
@@ -107,6 +111,16 @@ public class EditBookActivity  extends PageActivity {
                 removePageFromDB();
                 updateButtonState();
                 Toast.makeText(getApplicationContext(),"페이지 삭제", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.action_view_pagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "EDIT_MODE");
+                startActivityForResult(tmpIntent, Constant.EDIT_REQUEST);
+                System.out.println("페이지 모아보기");
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
