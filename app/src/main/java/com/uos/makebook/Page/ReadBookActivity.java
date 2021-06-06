@@ -40,13 +40,6 @@ public class ReadBookActivity extends PageActivity {
     }
 
     public void onBackPressed(){
-        /*
-        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
-        book.setCover(null);
-        intent.putExtra("book",book);
-        intent.putExtra("mode", "EDIT_MODE");
-        startActivityForResult(intent, Constant.EDIT_REQUEST);
-         */
         Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
         super.onBackPressed();
     }
@@ -250,6 +243,15 @@ public class ReadBookActivity extends PageActivity {
                     playRecord(-1);
                 }
                 return true;
+            case R.id.viewPagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "READ_MODE");
+                startActivityForResult(tmpIntent, Constant.READ_REQUEST);
+                finish();
+                return true;
             case R.id.playAll :
                 // 전체 페이지 재생
                 playAll();
@@ -261,16 +263,6 @@ public class ReadBookActivity extends PageActivity {
             case R.id.deleteAll :
                 // 전체 페이지 녹음 삭제
                 deleteAll();
-                return true;
-            case R.id.viewPagelist :
-                // 페이지 모아보기
-                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
-                book.setCover(null);
-                tmpIntent.putExtra("book",book);
-                tmpIntent.putExtra("mode", "READ_MODE");
-                startActivityForResult(tmpIntent, Constant.READ_REQUEST);
-                System.out.println("페이지 모아보기");
-                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

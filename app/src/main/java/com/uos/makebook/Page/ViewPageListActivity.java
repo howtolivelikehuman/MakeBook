@@ -86,7 +86,6 @@ public class ViewPageListActivity extends AppCompatActivity {
                     intent.putExtra("book", book);
 
                     startActivityForResult(intent, Constant.READ_REQUEST);
-                    finish(); //추가된것
                 }
                 else if(mode.equals("EDIT_MODE")){
                     Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
@@ -95,8 +94,8 @@ public class ViewPageListActivity extends AppCompatActivity {
                     intent.putExtra("list_idx", book.getListIdx());
                     intent.putExtra("book", book);
                     startActivityForResult(intent, Constant.EDIT_REQUEST);
-                    finish();
                 }
+                finish();
             }
         });
 
