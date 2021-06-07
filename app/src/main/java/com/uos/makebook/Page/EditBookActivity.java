@@ -127,8 +127,13 @@ public class EditBookActivity  extends PageActivity {
                 String value = data.getStringExtra("value");
                 int fontSize = data.getIntExtra("fontSize", 32);
                 int fontColor = data.getIntExtra("fontColor", Color.BLACK);
-                current.addText(value, fontSize, fontColor);
-                flipper.getCurrentView().invalidate();
+
+                if (value.equals("")) {
+                    Toast.makeText(getApplicationContext(), "내용이 없어 글이 추가되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    current.addText(value, fontSize, fontColor);
+                    flipper.getCurrentView().invalidate();
+                }
             } else {
                 System.err.println("EditBookActivity: Failed to add text.");
             }
