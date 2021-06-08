@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        
         android:layout_alignParentTop="true"
         android:layout_margin="20dp"
         android:padding="10dp"
@@ -30,7 +30,7 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         android:layout_toStartOf="@id/add_text_done"
-        android:layout_toLeftOf="@id/add_text_done"/>
+        />
 
     <TextView
         android:id="@+id/add_text_size"
@@ -43,7 +43,7 @@
         android:textColor="@color/black"
         android:textSize="15sp"
         android:layout_toStartOf="@id/add_text_color"
-        android:layout_toLeftOf="@id/add_text_color"/>
+        />
 
     <EditText
         android:id="@+id/add_text_edit_text"

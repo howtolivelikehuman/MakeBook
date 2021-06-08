@@ -13,11 +13,6 @@
         android:icon="@drawable/image"
         app:showAsAction="always">
     </item>
-    <item
-        android:id="@+id/action_edit_done"
-        android:title="완료"
-        app:showAsAction="always"
-    />
     <group android:id="@+id/group_play">
         <item
             android:id="@+id/action_create_prev"
@@ -30,6 +25,11 @@
         <item
             android:id="@+id/action_delete"
             android:title="페이지 삭제"
+            />
+        <item
+            android:id="@+id/action_view_pagelist"
+            android:title="페이지 모아보기"
+            android:icon="@drawable/pagelist"
             />
     </group>
 </menu>

@@ -33,7 +33,7 @@ public class PageActivity extends AppCompatActivity {
     PageUpdateEventListener pageUpdateEventListener;
 
     // layout
-    Button prev_button, next_button;
+    Button prev_button, next_button, complete_button;
     Toolbar toolbar;
     ViewFlipper flipper;
     TextView page;
@@ -61,7 +61,6 @@ public class PageActivity extends AppCompatActivity {
         page_idx = intent.getIntExtra("list_idx", -1);
 
 
-
         //툴바 설정
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -71,34 +70,52 @@ public class PageActivity extends AppCompatActivity {
         flipper = findViewById(R.id.flipper);
         prev_button = findViewById(R.id.btn_previous);
         next_button = findViewById(R.id.btn_next);
+        complete_button = findViewById(R.id.btn_complete);
 
         // DB로부터 값 받아오기
         setPageList();
+        makeFlipperByPageList(); // pagelist의 page를 flipper에 적용
         updateButtonState();
 
         // 이전 버튼
         prev_button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                flipper.showPrevious();
-                page_idx--;
-                updateButtonState();
+                gotoPrev();
             }
         });
 
         // 다음 버튼
         next_button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View view){
-                flipper.showNext();
-                page_idx++;
-                updateButtonState();
+                gotoNext();
+            }
+        });
+
+        complete_button.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                complete();
             }
         });
     }
 
-    public void setPageList(){
+    public void gotoPrev(){ // 이전 페이지로 이동
+        flipper.showPrevious();
+        page_idx--;
+        updateButtonState();
+    }
+
+    public void gotoNext(){ // 이후 페이지로 이동
+        flipper.showNext();
+        page_idx++;
+        updateButtonState();
+    }
+
+    public void complete(){} // 완료
+
+    public void setPageList(){ // pageList 만들기
         System.out.println("setPageList");
 
-        getPageListFromDB();
+        getPageListFromDB(); // DB로부터 page 받아오기 (정렬 안 된 상태)
 
         if(pageList.size()==0){ // page 없으면 추가 후 다시 받아오기
             initialize();
@@ -135,7 +152,7 @@ public class PageActivity extends AppCompatActivity {
         pageList = pageDB.select(selection, selectionArgs);
     }
 
-    public void sortPageList(){
+    public void sortPageList(){ // pageList nextPage에 따라 정렬하기
         System.out.println("sortPageList");
         ArrayList<Page> sortedPageList = new ArrayList<Page>();
 
@@ -158,7 +175,7 @@ public class PageActivity extends AppCompatActivity {
         pageList = sortedPageList;
     }
 
-    public Page getHead(){
+    public Page getHead(){ // 해당 책의 head 페이지 찾기
         String[] selection = {COLUMN_PAGE[1], COLUMN_PAGE[4]};
         String[] selectionArgs = {Long.toString(book_id), Integer.toString(1)};
 
@@ -170,7 +187,7 @@ public class PageActivity extends AppCompatActivity {
         return headList.get(0);
     }
 
-    public void makeFlipperByPageList(){
+    public void makeFlipperByPageList(){ // pagelist를 flipper에 등록하기
         System.out.println("makeFlipperByPageList");
 
         flipper.removeAllViews();
@@ -202,7 +219,6 @@ public class PageActivity extends AppCompatActivity {
 
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
-
         setPageList();
         System.out.println(page_idx);
     }
@@ -219,7 +235,6 @@ public class PageActivity extends AppCompatActivity {
         current_page.setNextPage(pk);
         pageDB.update(current_page); // 기존 페이지 업데이트
         new_page.setPageUpdateEventListener(pageUpdateEventListener);
-
         setPageList();
         System.out.println(page_idx);
     }
