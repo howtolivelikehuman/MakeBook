@@ -23,6 +23,7 @@ import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Page.Element.ImageData;
 import com.uos.makebook.Page.Element.TextData;
 import com.uos.makebook.R;
+import com.uos.makebook.MainList.BookListActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -46,11 +47,8 @@ public class EditBookActivity  extends PageActivity {
 
     @Override
     public void onBackPressed(){
-        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
-        book.setCover(null);
-        intent.putExtra("book",book);
-        intent.putExtra("mode", "EDIT_MODE");
-        startActivityForResult(intent, Constant.EDIT_REQUEST);
+        Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
+        startActivity(intent);
         super.onBackPressed();
     }
 
@@ -62,6 +60,13 @@ public class EditBookActivity  extends PageActivity {
         return true;
     }
 
+    @Override
+    public void complete(){
+        super.complete();
+        finish();
+        //종료하지 말고 그냥 디비에 수정된 페이지 반영하고 flipper는 계속 떠있도록 하고, 뒤로가기 하면 페이지모아보기 뜨도록 하면 좋을 것 같은데 어떤가요?(다현)
+    }
+  
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         Intent intent;
@@ -79,12 +84,15 @@ public class EditBookActivity  extends PageActivity {
                 intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "이미지 선택"), Constant.ADD_IMAGE_REQUEST);
                 return true;
-            case R.id.action_edit_done :
-                // 페이지 수정
-                System.out.println("책 수정 완료");
-                //finish();
-                //종료하지 말고 그냥 디비에 수정된 페이지 반영하고 flipper는 계속 떠있도록 하고, 뒤로가기 하면 페이지모아보기 뜨도록 하면 좋을 것 같은데 어떤가요?(다현)
-                Toast.makeText(getApplicationContext(),"페이지 수정 완료", Toast.LENGTH_LONG).show();
+            case R.id.action_view_pagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "EDIT_MODE");
+                startActivity(tmpIntent);
+                System.out.println("페이지 모아보기");
+                finish();
                 return true;
             case R.id.action_create_prev :
                 // 페이지 추가

@@ -26,7 +26,7 @@ public class CoverPaintBoard extends View {
     float lastY;
     float mCurveEndX;
     float mCurveEndY;
-    int mInvalidateExtraBorder = 10;
+    public int mInvalidateExtraBorder = 10;
 
     Path mpath = new Path();
     Paint.Cap strokeCap = Paint.Cap.ROUND;
