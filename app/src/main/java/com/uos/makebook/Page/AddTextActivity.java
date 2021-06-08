@@ -33,24 +33,6 @@ public class AddTextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_bookpage_addtext);
 
-        colorPicker = new ColorPicker(this);
-        colorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
-            @Override
-            public void setOnFastChooseColorListener(int position, int color) {
-                colorPicker.setColorButtonTickColor(position);
-                textColor = color;
-                editText.setTextColor(textColor);
-            }
-
-            @Override
-            public void onCancel() { }
-        });
-
-        colorPicker.setColumns(5);
-        colorPicker.setTitle("글자 색 고르기");
-        colorPicker.setDefaultColorButton(Color.BLACK);
-        colorPicker.setRoundColorButton(true);
-
         doneText = findViewById(R.id.add_text_done);
         colorText = findViewById(R.id.add_text_color);
         sizeText = findViewById(R.id.add_text_size);
@@ -80,7 +62,26 @@ public class AddTextActivity extends AppCompatActivity {
             finish();
         });
 
-        colorText.setOnClickListener(v -> colorPicker.show());
+        colorText.setOnClickListener(v -> {
+            colorPicker = new ColorPicker(this);
+            colorPicker.setOnFastChooseColorListener(new ColorPicker.OnFastChooseColorListener() {
+                @Override
+                public void setOnFastChooseColorListener(int position, int color) {
+                    colorPicker.setColorButtonTickColor(position);
+                    textColor = color;
+                    editText.setTextColor(textColor);
+                }
+
+                @Override
+                public void onCancel() { }
+            });
+
+            colorPicker.setColumns(5);
+            colorPicker.setTitle("글자 색 고르기");
+            colorPicker.setDefaultColorButton(textColor);
+            colorPicker.setRoundColorButton(true);
+            colorPicker.show();
+        });
 
         editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         sizeText.setOnClickListener(v -> {
