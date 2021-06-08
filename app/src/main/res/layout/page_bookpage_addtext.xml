@@ -54,6 +54,6 @@
         android:gravity="center"
         android:inputType="textMultiLine"
         android:textSize="64px"
-        android:text="글을 입력하세요!"/>
+        android:hint="글을 입력하세요!"/>
 
 </RelativeLayout>

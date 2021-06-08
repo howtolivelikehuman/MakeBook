@@ -17,6 +17,11 @@ import org.json.JSONObject;
 public class TextData extends ElementData {
     private String text = "";
     private int fontSize, fontColor;
+
+    private boolean textDirty = false;
+    private boolean fontSizeDirty = false;
+    private boolean fontColorDirty = false;
+
     private StaticLayout textLayout;
     private TextPaint textPaint;
 
@@ -33,7 +38,7 @@ public class TextData extends ElementData {
         }
     }
 
-    public TextData(String value, int fontSize, int fontColor) {
+    public TextData(String value, int fontSize, int fontColor, int canvasWidth) {
         super(0, 0, 0, 0);
         this.text = value;
         this.fontSize = fontSize;
@@ -43,12 +48,14 @@ public class TextData extends ElementData {
         generateTextLayout();
 
         Rect bound = new Rect();
-        TextPaint paint = new TextPaint();
-        paint.setTextSize(fontSize);
-        paint.getTextBounds(value, 0, value.length(), bound);
-
-        setWidth(bound.width());
-        setHeight(bound.height());
+        textPaint.getTextBounds(value, 0, value.length(), bound);
+        if (canvasWidth < bound.width() + RESIZE_BORDER * 2) {
+            setWidth(canvasWidth - RESIZE_BORDER * 2);
+            setHeight(bound.height() * (float)Math.ceil((float)bound.width() / canvasWidth));
+        } else {
+            setWidth(bound.width());
+            setHeight(bound.height());
+        }
     }
 
     private void generateTextLayout() {
@@ -58,6 +65,7 @@ public class TextData extends ElementData {
             StaticLayout.Builder builder = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, (int)getWidth());
             textLayout = builder.build();
         }
+        textDirty = false;
     }
 
     private void generateTextPaint() {
@@ -66,6 +74,9 @@ public class TextData extends ElementData {
         textPaint.setStrokeCap(Paint.Cap.ROUND);
         textPaint.setTextSize(fontSize);
         textPaint.setColor(fontColor);
+
+        fontSizeDirty = false;
+        fontColorDirty = false;
     }
 
     @Override
@@ -74,8 +85,39 @@ public class TextData extends ElementData {
         generateTextLayout();
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public int getFontColor() {
+        return fontColor;
+    }
+
+    public void setText(String value) {
+        text = value;
+        textDirty = true;
+    }
+
+    public void setFontSize(int size) {
+        fontSize = size;
+        fontSizeDirty = true;
+    }
+
+    public void setFontColor(int color) {
+        fontColor = color;
+        fontColorDirty = true;
+    }
+
     @Override
     public void drawOn(Canvas canvas) {
+        if (fontColorDirty || fontSizeDirty || textDirty) {
+            generateTextPaint();
+            generateTextLayout();
+        }
         super.drawOn(canvas);
         canvas.save();
         canvas.translate(getX(), getY());

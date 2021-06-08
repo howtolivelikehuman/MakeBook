@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.NumberPicker;
@@ -55,19 +56,33 @@ public class AddTextActivity extends AppCompatActivity {
         sizeText = findViewById(R.id.add_text_size);
         editText = findViewById(R.id.add_text_edit_text);
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("value")) {
+            editText.setText(intent.getStringExtra("value"));
+        }
+        if (intent.hasExtra("fontSize")) {
+            textSize = intent.getIntExtra("fontSize", textSize);
+            editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        }
+        if (intent.hasExtra("fontColor")) {
+            textColor = intent.getIntExtra("fontColor", textColor);
+            editText.setTextColor(textColor);
+        }
+
         doneText.setOnClickListener(v -> {
-            Intent intent = new Intent();
+            Intent result = new Intent();
 
-            intent.putExtra("value", editText.getText().toString());
-            intent.putExtra("fontColor", textColor);
-            intent.putExtra("fontSize", textSize);
+            result.putExtra("value", editText.getText().toString());
+            result.putExtra("fontColor", textColor);
+            result.putExtra("fontSize", textSize);
 
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK, result);
             finish();
         });
 
         colorText.setOnClickListener(v -> colorPicker.show());
 
+        editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         sizeText.setOnClickListener(v -> {
             NumberPicker picker = new NumberPicker(this);
             picker.setMaxValue(300);
@@ -77,7 +92,10 @@ public class AddTextActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(picker);
             builder.setTitle("글자 크기 선택");
-            builder.setPositiveButton("OK", (dialog, which) -> textSize = picker.getValue());
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                textSize = picker.getValue();
+                editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            });
             builder.setNegativeButton("CANCEL", (dialog, which) -> { });
             builder.create().show();
         });

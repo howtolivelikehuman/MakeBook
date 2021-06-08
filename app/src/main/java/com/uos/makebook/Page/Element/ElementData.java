@@ -3,6 +3,7 @@ package com.uos.makebook.Page.Element;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -181,4 +182,8 @@ public abstract class ElementData {
             return null;
         }
     }
+
+    // 어떤 객체가 "영구적으로" 삭제될 때 수행해야 할 절치를 정의.
+    // ex) 이미지 데이터라면, 로컬에 존재하는 이미지 파일을 삭제.
+    public void onRemove() { }
 }
