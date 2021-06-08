@@ -8,6 +8,8 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -33,9 +35,14 @@ public class ReadBookActivity extends PageActivity {
     MediaRecorder recorder;
     MediaPlayer player;
 
+    String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        File myDir = new File(strSDpath+"/Book");
+        if(!myDir.exists())
+            myDir.mkdir();
         folderPath = makeFolder();
     }
 
@@ -51,11 +58,36 @@ public class ReadBookActivity extends PageActivity {
         return true;
     }
 
+    @Override
+    public void gotoNext(){
+        if(isRecording){ // 페이지가 넘어가면 자동 녹음 중지
+            stopRecord();
+        }
+        if(isPlaying){ // 페이지가 넘어가면 자동 재생 중지
+            stopPlayRecord();
+        }
+        super.gotoNext();
+    }
+
+    @Override
+    public void gotoPrev(){
+        if(isRecording){ // 페이지가 넘어가면 자동 녹음 중지
+            stopRecord();
+        }
+        if(isPlaying){ // 페이지가 넘어가면 자동 재생 중지
+            stopPlayRecord();
+        }
+        super.gotoPrev();
+    }
+
+    @Override
+    public void complete(){
+        super.complete();
+        finish();
+    }
+
     private String makeFolder(){ // 폴더 없으면 생성하고 path return
-        String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File myDir = new File(strSDpath+"/Book");
-        myDir.mkdir();
-        myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
+        File myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
         myDir.mkdir(); // todo : sdk 버전 30에서 권한 오류남
         return myDir.getAbsolutePath();
     }
@@ -80,16 +112,18 @@ public class ReadBookActivity extends PageActivity {
             Toast.makeText(this, "파일 생성 성공", Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "파일 이미 있음", Toast.LENGTH_SHORT).show();
         }
         return recordFile.getAbsolutePath();
     }
 
     private void startRecord(){
+        if(isPlaying){
+            // 재생 중이면 녹음 x
+            return;
+        }
         // 녹음 시작
-        record.setIcon(ContextCompat.getDrawable(this, R.drawable.stop));
-
         String filepath = makeRecordFile();
+        System.out.println(filepath);
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC); // 어디에서 음성 데이터를 받을 것인지
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4); // 압축 형식 설정
@@ -103,12 +137,18 @@ public class ReadBookActivity extends PageActivity {
 
             Toast.makeText(this, "녹음 시작", Toast.LENGTH_SHORT).show();
             isRecording = true;
+            record.setIcon(ContextCompat.getDrawable(this, R.drawable.stop));
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void stopRecord(){
+        if(isPlaying){
+            // 재생 중이면 녹음 중지 x
+            return;
+        }
         // 녹음 끝
         record.setIcon(ContextCompat.getDrawable(this, R.drawable.mic));
         if (recorder != null) {
@@ -121,6 +161,10 @@ public class ReadBookActivity extends PageActivity {
     }
 
     private void playRecord(int idx){
+        if(isRecording){
+            // 녹음 중이면 재생 x
+            return;
+        }
         // 녹음 재생
         if(idx == -1){
             idx = page_idx;
@@ -147,13 +191,36 @@ public class ReadBookActivity extends PageActivity {
             Toast.makeText(this, "재생 시작", Toast.LENGTH_SHORT).show();
             playThis.setIcon(ContextCompat.getDrawable(this, R.drawable.stop));
             isPlaying = true;
+
+            /* 별도 thread로 play 중인지 확인 */
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    while(player.isPlaying()){}
+                    Message msg = handler.obtainMessage(); // main thread의 gui를 이용하기 위해 필요
+                    handler.sendMessage(msg);
+                }
+            };
+            Thread thread = new Thread(myRunnable);
+            thread.start();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    final Handler handler = new Handler(){
+        public void handleMessage(Message msg){
+            stopPlayRecord();
+        }
+    };
+
     private void stopPlayRecord(){
-        if (player != null && isPlaying) {
+        if(isRecording){
+            // 녹음 중이면 재생 중지 x
+            return;
+        }
+        if (isPlaying) {
             player.stop();
 
             Toast.makeText(this, "재생 중지", Toast.LENGTH_SHORT).show();
@@ -162,27 +229,35 @@ public class ReadBookActivity extends PageActivity {
         }
     }
 
-    private void playAll() {
+    private void playAllModule(){
+        if(page_idx == pageList.size()-1)
+            return;
+        if(!isPlaying)
+            playRecord(page_idx); // 음성 파일 실행
+
         Handler mHandler = new Handler();
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(isPlaying) { // 4초 후 음성 파일 계속 실행 중이면 재귀 실행
+                    playAllModule();
+                    return;
+                }
+                flipper.showNext();
+                page_idx++;
+                updateButtonState();
+                playAllModule();
+            }
+        }, 4000); // 4초 간격으로 페이지 실행
+    }
+
+    private void playAll() {
         Toast.makeText(getApplicationContext(),"전체 재생", Toast.LENGTH_LONG).show();
         for (int i = 0; i < page_idx; i++) {
             flipper.showPrevious();
         }
         page_idx = 0;
-        updateButtonState();
-        isPlaying = true;
-        playRecord(0);
-        for (int i = 0; i < pageList.size()-1; i++) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    flipper.showNext();
-                    page_idx++;
-                    updateButtonState();
-                    playRecord(page_idx);
-                }
-            }, 3000*(i+1)); // 3초 간격으로 페이지 실행
-        }
+        playAllModule();
         isPlaying = false;
         playThis.setIcon(ContextCompat.getDrawable(this, R.drawable.play));
     }
@@ -222,10 +297,6 @@ public class ReadBookActivity extends PageActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
-            case R.id.action_read_done :
-                finish();
-                return true;
-
             case R.id.record :
                 // 녹음 시작 / 정지
                 if(isRecording) {
