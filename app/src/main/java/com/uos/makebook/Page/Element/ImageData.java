@@ -14,6 +14,10 @@ import com.uos.makebook.Common.Function;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class ImageData extends ElementData {
     private String src;
     private Bitmap bitmap = null;
@@ -41,6 +45,15 @@ public class ImageData extends ElementData {
         if (bitmap == null) {
             System.err.println("ImageData: Image file is not found - " + src);
         }
+    }
+
+    public void setSource(String newSrc) {
+        // 이전의 이미지 파일이 존재한다면 삭제.
+        File old = new File(this.src);
+        if (old.exists()) {
+            old.delete();
+        }
+        initialize(newSrc);
     }
 
     @Override

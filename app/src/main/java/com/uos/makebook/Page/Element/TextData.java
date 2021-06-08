@@ -17,6 +17,11 @@ import org.json.JSONObject;
 public class TextData extends ElementData {
     private String text = "";
     private int fontSize, fontColor;
+
+    private boolean textDirty = false;
+    private boolean fontSizeDirty = false;
+    private boolean fontColorDirty = false;
+
     private StaticLayout textLayout;
     private TextPaint textPaint;
 
@@ -56,6 +61,7 @@ public class TextData extends ElementData {
             StaticLayout.Builder builder = StaticLayout.Builder.obtain(text, 0, text.length(), textPaint, (int)getWidth());
             textLayout = builder.build();
         }
+        textDirty = false;
     }
 
     private void generateTextPaint() {
@@ -64,6 +70,9 @@ public class TextData extends ElementData {
         textPaint.setStrokeCap(Paint.Cap.ROUND);
         textPaint.setTextSize(fontSize);
         textPaint.setColor(fontColor);
+
+        fontSizeDirty = false;
+        fontColorDirty = false;
     }
 
     @Override
@@ -72,8 +81,39 @@ public class TextData extends ElementData {
         generateTextLayout();
     }
 
+    public String getText() {
+        return text;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public int getFontColor() {
+        return fontColor;
+    }
+
+    public void setText(String value) {
+        text = value;
+        textDirty = true;
+    }
+
+    public void setFontSize(int size) {
+        fontSize = size;
+        fontSizeDirty = true;
+    }
+
+    public void setFontColor(int color) {
+        fontColor = color;
+        fontColorDirty = true;
+    }
+
     @Override
     public void drawOn(Canvas canvas) {
+        if (fontColorDirty || fontSizeDirty || textDirty) {
+            generateTextPaint();
+            generateTextLayout();
+        }
         super.drawOn(canvas);
         canvas.save();
         canvas.translate(getX(), getY());

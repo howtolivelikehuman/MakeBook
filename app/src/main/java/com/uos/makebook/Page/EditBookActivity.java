@@ -20,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.Common.Constant;
+import com.uos.makebook.Page.Element.ImageData;
+import com.uos.makebook.Page.Element.TextData;
 import com.uos.makebook.R;
 
 import java.io.BufferedInputStream;
@@ -34,6 +36,9 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class EditBookActivity  extends PageActivity {
+    private TextData editingText = null;
+    private ImageData editingImage = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,6 @@ public class EditBookActivity  extends PageActivity {
         getMenuInflater().inflate(R.menu.editbook_menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
@@ -113,6 +117,29 @@ public class EditBookActivity  extends PageActivity {
         }
     }
 
+    // 이미 있는 텍스트 객체의 내용을 수정.
+    // PageCanvas에서 호출하며, 내부적으로 AddTextActivity를 사용한다는 점에서
+    // 텍스트를 새로 추가하는 과정과 동일.
+    public void startTextEditing(TextData textData) {
+        Intent intent = new Intent(getApplicationContext(), AddTextActivity.class);
+        intent.putExtra("value", textData.getText());
+        intent.putExtra("fontSize", textData.getFontSize());
+        intent.putExtra("fontColor", textData.getFontColor());
+
+        editingText = textData;
+        startActivityForResult(intent, Constant.EDIT_TEXT_REQUEST);
+    }
+
+    // 이미 있는 이미지 객체의 내용을 수정.
+    public void startImageEditing(ImageData imageData) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+
+        editingImage = imageData;
+        startActivityForResult(Intent.createChooser(intent, "이미지 선택"), Constant.EDIT_IMAGE_REQUEST);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,40 +148,59 @@ public class EditBookActivity  extends PageActivity {
             return;
         }
 
-        if (requestCode == Constant.ADD_TEXT_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Page current = pageList.get(page_idx);
-                String value = data.getStringExtra("value");
-                int fontSize = data.getIntExtra("fontSize", 32);
-                int fontColor = data.getIntExtra("fontColor", Color.BLACK);
-
-                if (value.equals("")) {
-                    Toast.makeText(getApplicationContext(), "내용이 없어 글이 추가되지 않았습니다.", Toast.LENGTH_SHORT).show();
-                } else {
-                    current.addText(value, fontSize, fontColor);
-                    flipper.getCurrentView().invalidate();
-                }
-            } else {
-                System.err.println("EditBookActivity: Failed to add text.");
-            }
-        } else if (requestCode == Constant.ADD_IMAGE_REQUEST) {
-            Uri uri = data.getData();
-            if (uri != null) {
-                String name = getFileNameFromUri(uri);
-                File dest = generateInternalFile(name + getRandomString(10));
-                try (FileOutputStream out = new FileOutputStream(dest)) {
-                    Bitmap bitmap = getBitmapFromUri(uri);
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-
+        switch (requestCode) {
+            case Constant.ADD_TEXT_REQUEST:
+            case Constant.EDIT_TEXT_REQUEST:
+                if (resultCode == RESULT_OK) {
                     Page current = pageList.get(page_idx);
-                    current.addImage(dest.getAbsolutePath());
-                    flipper.getCurrentView().invalidate();
-                } catch (IOException e) {
+                    String value = data.getStringExtra("value");
+                    int fontSize = data.getIntExtra("fontSize", 32);
+                    int fontColor = data.getIntExtra("fontColor", Color.BLACK);
+
+                    if (value.equals("")) {
+                        Toast.makeText(getApplicationContext(), "내용이 없어 글이 추가되지 않았습니다.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (requestCode == Constant.ADD_TEXT_REQUEST) {
+                            current.addText(value, fontSize, fontColor);
+                        } else {
+                            editingText.setText(value);
+                            editingText.setFontSize(fontSize);
+                            editingText.setFontColor(fontColor);
+                            editingText = null;
+                        }
+                        flipper.getCurrentView().invalidate();
+                    }
+                } else {
                     System.err.println("EditBookActivity: Failed to add text.");
                 }
-            } else {
-                System.err.println("EditBookActivity: Failed to add text.");
-            }
+                break;
+
+            case Constant.ADD_IMAGE_REQUEST:
+            case Constant.EDIT_IMAGE_REQUEST:
+                Uri uri = data.getData();
+                if (uri != null) {
+                    String name = getFileNameFromUri(uri);
+                    File dest = generateInternalFile(name + getRandomString(10));
+                    try (FileOutputStream out = new FileOutputStream(dest)) {
+                        Bitmap bitmap = getBitmapFromUri(uri);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+
+                        if (requestCode == Constant.ADD_IMAGE_REQUEST) {
+                            Page current = pageList.get(page_idx);
+                            current.addImage(dest.getAbsolutePath());
+                        } else {
+                            editingImage.setSource(dest.getAbsolutePath());
+                            editingImage = null;
+                        }
+
+                        flipper.getCurrentView().invalidate();
+                    } catch (IOException e) {
+                        System.err.println("EditBookActivity: Failed to add image.");
+                    }
+                } else {
+                    System.err.println("EditBookActivity: Failed to add image.");
+                }
+                break;
         }
     }
 

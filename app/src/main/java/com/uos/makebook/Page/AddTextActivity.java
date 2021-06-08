@@ -56,14 +56,27 @@ public class AddTextActivity extends AppCompatActivity {
         sizeText = findViewById(R.id.add_text_size);
         editText = findViewById(R.id.add_text_edit_text);
 
+        Intent intent = getIntent();
+        if (intent.hasExtra("value")) {
+            editText.setText(intent.getStringExtra("value"));
+        }
+        if (intent.hasExtra("fontSize")) {
+            textSize = intent.getIntExtra("fontSize", textSize);
+            editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        }
+        if (intent.hasExtra("fontColor")) {
+            textColor = intent.getIntExtra("fontColor", textColor);
+            editText.setTextColor(textColor);
+        }
+
         doneText.setOnClickListener(v -> {
-            Intent intent = new Intent();
+            Intent result = new Intent();
 
-            intent.putExtra("value", editText.getText().toString());
-            intent.putExtra("fontColor", textColor);
-            intent.putExtra("fontSize", textSize);
+            result.putExtra("value", editText.getText().toString());
+            result.putExtra("fontColor", textColor);
+            result.putExtra("fontSize", textSize);
 
-            setResult(RESULT_OK, intent);
+            setResult(RESULT_OK, result);
             finish();
         });
 

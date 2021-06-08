@@ -3,6 +3,7 @@ package com.uos.makebook.Page;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Page.Element.BorderKind;
 import com.uos.makebook.Page.Element.ElementData;
 import com.uos.makebook.Page.Element.ImageData;
@@ -68,7 +70,7 @@ public class PageCanvas extends View {
         builder.setItems(items, ((dialog, which) -> {
             switch (which) {
                 case 0:
-
+                    showEditDialog(context, element);
                     break;
                 case 1:
                     showDeletionDialog(context, element);
@@ -77,6 +79,24 @@ public class PageCanvas extends View {
         }));
         builder.setCancelable(true);
         builder.show();
+    }
+
+    private void showEditDialog(Context context, ElementData element) {
+        EditBookActivity activity;
+        if (context instanceof EditBookActivity) {
+            activity = (EditBookActivity) context;
+        } else {
+            System.err.println("PageCanvas: Failed to access to EditBookActivity");
+            return;
+        }
+
+        if (element instanceof TextData) {
+            activity.startTextEditing((TextData) element);
+        } else if (element instanceof ImageData) {
+            activity.startImageEditing((ImageData) element);
+        } else {
+            Toast.makeText(context, "수정할 수 없는 객체입니다.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showDeletionDialog(Context context, ElementData element) {
