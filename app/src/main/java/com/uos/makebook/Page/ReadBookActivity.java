@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -33,7 +34,7 @@ public class ReadBookActivity extends PageActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        folderPath = makeFolder();
+        folderPath = makeFolder(); // 폴더 생성
     }
 
     @Override
@@ -48,8 +49,37 @@ public class ReadBookActivity extends PageActivity {
         return true;
     }
 
+    @Override
+    public void gotoNext(){
+        if(isRecording){ // 페이지가 넘어가면 자동 녹음 중지
+            stopRecord();
+        }
+        if(isPlaying){ // 페이지가 넘어가면 자동 재생 중지
+            stopPlayRecord();
+        }
+        super.gotoNext();
+    }
+
+    @Override
+    public void gotoPrev(){
+        if(isRecording){ // 페이지가 넘어가면 자동 녹음 중지
+            stopRecord();
+        }
+        if(isPlaying){ // 페이지가 넘어가면 자동 재생 중지
+            stopPlayRecord();
+        }
+        super.gotoPrev();
+    }
+
+    @Override
+    public void complete(){
+        super.complete();
+        finish();
+    }
+
     private String makeFolder(){ // 폴더 없으면 생성하고 path return
         String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
         File myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
         myDir.mkdir(); // todo : sdk 버전 30에서 권한 오류남
         return myDir.getAbsolutePath();
@@ -98,6 +128,7 @@ public class ReadBookActivity extends PageActivity {
 
             Toast.makeText(this, "녹음 시작", Toast.LENGTH_SHORT).show();
             isRecording = true;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -142,13 +173,30 @@ public class ReadBookActivity extends PageActivity {
             Toast.makeText(this, "재생 시작", Toast.LENGTH_SHORT).show();
             playThis.setIcon(ContextCompat.getDrawable(this, R.drawable.stop));
             isPlaying = true;
+
+            /* 별도 thread로 play 중인지 확인 */
+            Handler mainHandler = new Handler(this.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    while(player.isPlaying()){}
+                    Looper looper = mainHandler.getLooper(); // main thread의 gui를 이용하기 위해 필요
+                    if (looper.myLooper() == null)
+                    {
+                        looper.prepare();
+                    }
+                    stopPlayRecord();
+                }
+            };
+            mainHandler.post(myRunnable);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void stopPlayRecord(){
-        if (player != null && isPlaying) {
+        if (!player.isPlaying() && isPlaying) {
             player.stop();
 
             Toast.makeText(this, "재생 중지", Toast.LENGTH_SHORT).show();
@@ -171,12 +219,15 @@ public class ReadBookActivity extends PageActivity {
             mHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    if(player.isPlaying()){ // 녹음이 재생 중이면 기다리기
+                        return;
+                    }
                     flipper.showNext();
                     page_idx++;
                     updateButtonState();
                     playRecord(page_idx);
                 }
-            }, 3000*(i+1)); // 3초 간격으로 페이지 실행
+            }, 4000*(i+1)); // 4초 간격으로 페이지 실행
         }
         isPlaying = false;
         playThis.setIcon(ContextCompat.getDrawable(this, R.drawable.play));
@@ -217,8 +268,6 @@ public class ReadBookActivity extends PageActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId())
         {
-            case R.id.action_read_done :
-                finish();
             case R.id.record :
                 // 녹음 시작 / 정지
                 if(isRecording) {

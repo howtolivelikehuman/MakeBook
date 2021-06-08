@@ -13,11 +13,6 @@
         android:icon="@drawable/image"
         app:showAsAction="always">
     </item>
-    <item
-        android:id="@+id/action_edit_done"
-        android:title="완료"
-        app:showAsAction="always"
-    />
     <group android:id="@+id/group_play">
         <item
             android:id="@+id/action_create_prev"
