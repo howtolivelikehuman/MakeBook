@@ -1,11 +1,19 @@
 package com.uos.makebook.MainList;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,17 +33,28 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.pedro.library.AutoPermissions;
 import com.uos.makebook.Common.BookDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Common.DB;
+import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.Page.EditBookActivity;
+import com.uos.makebook.Page.Page;
+import com.uos.makebook.Page.PageMethod;
 import com.uos.makebook.Page.ReadBookActivity;
 import com.uos.makebook.R;
 import com.uos.makebook.Make.MakeCoverActivity;
 import com.uos.makebook.Page.ViewPageListActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class BookListActivity extends AppCompatActivity{
 
@@ -48,19 +67,19 @@ public class BookListActivity extends AppCompatActivity{
     Toolbar toolbar;
     Menu menu;
 
-    TextView cover, edit, read, delete;
-
     //팝업
     PopupMenu popUp;
     AlertDialog finalAsk;
-
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.mainlist_booklist);
+
+        //안드로이드 권한 질의
+        AutoPermissions.Companion.loadAllPermissions(this,101);
+        permissionCheck();
 
         //DB setting
         bookDB = new BookDB(getApplicationContext());
@@ -169,12 +188,78 @@ public class BookListActivity extends AppCompatActivity{
                         popUp.dismiss();
                         break;
                     }
+                    //내보내기
+                    case R.id.popuptv_share:{
+                        ArrayList<Page> pages = PageMethod.setPageList(new PageDB(getApplicationContext()), book.getId());
+                        DisplayMetrics metrics = getResources().getDisplayMetrics();
+                        int width = metrics.widthPixels;
+                        int height = metrics.heightPixels;
+
+                        drawPDF(pages, book, width, height);
+                        break;
+                    }
                 }
                 return false;
             }
         });
         popUp.show();
 
+    }
+
+
+    //PDF 만들기
+    public void drawPDF(ArrayList<Page> pages, Book book, int width, int heigth){
+
+        int pageNum = 0;
+        PdfDocument doc = new PdfDocument();
+        PdfDocument.PageInfo pageInfo;
+        PdfDocument.Page page;
+        Canvas canvas;
+
+
+        if(book.cover != null){
+            pageInfo =  new PdfDocument.PageInfo.Builder(width,heigth,pageNum++).create();
+            page = doc.startPage(pageInfo);
+            canvas = page.getCanvas();
+            canvas.drawBitmap(book.cover,0,0,new Paint());
+            doc.finishPage(page);
+        }
+
+        for(int i = 0; i < pages.size(); i++){
+            pageInfo = new PdfDocument.PageInfo.Builder(width,heigth,pageNum++).create();
+            page = doc.startPage(pageInfo);
+            canvas = page.getCanvas();
+            pages.get(i).drawElements(canvas);
+            doc.finishPage(page);
+        }
+
+        //폴더 생성
+        String folderPath = makeFolder(book.getId());
+        //파일 생성
+        String filePath = folderPath + "/" + book.getId()+".pdf";
+        File file = new File(filePath);
+
+        try{
+            //있으면 삭제하고 다시만들기
+            if(file.exists()){
+                file.delete();
+            }
+            doc.writeTo(new FileOutputStream(file));
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        Toast.makeText(getApplicationContext(), filePath, Toast.LENGTH_LONG).show();
+        doc.close();
+    }
+
+
+    private String makeFolder(long book_id){
+        String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File myDir = new File(strSDpath+"/Book");
+        myDir.mkdir();
+        myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
+        myDir.mkdir();
+        return myDir.getAbsolutePath();
     }
 
     public void onDeleteFinalAsk(long bookId){
@@ -247,6 +332,13 @@ public class BookListActivity extends AppCompatActivity{
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void permissionCheck(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO}, 1);
         }
     }
 }

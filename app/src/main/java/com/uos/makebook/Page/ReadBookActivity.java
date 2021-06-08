@@ -53,7 +53,9 @@ public class ReadBookActivity extends PageActivity {
 
     private String makeFolder(){ // 폴더 없으면 생성하고 path return
         String strSDpath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
+        File myDir = new File(strSDpath+"/Book");
+        myDir.mkdir();
+        myDir = new File(strSDpath+"/Book/book"+Long.toString(book_id));
         myDir.mkdir(); // todo : sdk 버전 30에서 권한 오류남
         return myDir.getAbsolutePath();
     }
@@ -222,6 +224,8 @@ public class ReadBookActivity extends PageActivity {
         {
             case R.id.action_read_done :
                 finish();
+                return true;
+
             case R.id.record :
                 // 녹음 시작 / 정지
                 if(isRecording) {
@@ -238,7 +242,8 @@ public class ReadBookActivity extends PageActivity {
                     playRecord(-1);
                 }
                 return true;
-            case R.id.viewPagelist :
+
+            case R.id.action_view_pagelist :
                 // 페이지 모아보기
                 Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
                 book.setCover(null);

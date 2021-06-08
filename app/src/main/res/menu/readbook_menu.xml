@@ -4,6 +4,7 @@
     <item
         android:id="@+id/action_read_done"
         android:title="완료"
+        android:icon="@drawable/finish"
         app:showAsAction="always"
         />
     <item
@@ -18,12 +19,6 @@
         android:icon="@drawable/play"
         app:showAsAction="always"
         />
-    <item
-        android:id="@+id/viewPagelist"
-        android:title="페이지 모아보기"
-        android:icon="@drawable/pagelist"
-        app:showAsAction="always"
-        />
     <group android:id="@+id/group_play">
         <item
             android:id="@+id/playAll"
@@ -36,6 +31,11 @@
         <item
             android:id="@+id/deleteAll"
             android:title="전체 페이지 녹음 삭제"
+            />
+        <item
+            android:id="@+id/action_view_pagelist"
+            android:title="페이지 모아보기"
+            android:icon="@drawable/pagelist"
             />
     </group>
 </menu>

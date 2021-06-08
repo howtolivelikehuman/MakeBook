@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                
                 android:text="제목 : " />
 
             <EditText
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                
                 android:text="작가 : "
                 android:textSize="18sp" />
 
@@ -87,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
-                android:layout_marginLeft="5dp"
+                
                 android:text="지우개"
                 android:textSize="18sp" />
 
@@ -127,7 +127,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
+                    
                     android:text="굵기"
                     android:textSize="18sp" />
 
