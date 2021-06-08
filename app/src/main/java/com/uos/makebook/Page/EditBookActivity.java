@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.R;
+import com.uos.makebook.MainList.BookListActivity;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -41,11 +42,8 @@ public class EditBookActivity  extends PageActivity {
 
     @Override
     public void onBackPressed(){
-        Intent intent = new Intent(getApplicationContext(), ViewPageListActivity.class);
-        book.setCover(null);
-        intent.putExtra("book",book);
-        intent.putExtra("mode", "EDIT_MODE");
-        startActivityForResult(intent, Constant.EDIT_REQUEST);
+        Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
+        startActivity(intent);
         super.onBackPressed();
     }
 
@@ -80,6 +78,16 @@ public class EditBookActivity  extends PageActivity {
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "이미지 선택"), Constant.ADD_IMAGE_REQUEST);
+                return true;
+            case R.id.action_view_pagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "EDIT_MODE");
+                startActivity(tmpIntent);
+                System.out.println("페이지 모아보기");
+                finish();
                 return true;
             case R.id.action_create_prev :
                 // 페이지 추가
