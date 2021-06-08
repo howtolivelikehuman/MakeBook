@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Base64;
+import android.util.DisplayMetrics;
+
 import com.uos.makebook.Common.Function;
 
 import org.json.JSONException;
@@ -26,20 +28,38 @@ public class ImageData extends ElementData {
         super(jsonObject);
         try {
             src = jsonObject.getString("src");
-            initialize(src);
+            getBitmap(src);
         } catch (JSONException e) {
             System.err.println("ImageData: Invalid JSON object");
         }
     }
 
-    public ImageData(String src) {
+    public ImageData(String src, int canvasWidth, int canvasHeight) {
         super(0, 0, 0, 0);
-        initialize(src);
-        setWidth(bitmap.getWidth());
-        setHeight(bitmap.getHeight());
+        getBitmap(src);
+
+        float width = bitmap.getWidth();
+        float height = bitmap.getHeight();
+
+        if (canvasWidth < width + RESIZE_BORDER || canvasHeight < height + RESIZE_BORDER) {
+            float bitmapRatio = width / height;
+            float displayRatio = (float) canvasWidth / canvasHeight;
+
+            if (displayRatio < bitmapRatio) {
+                // 비트맵의 가로길이를 화면 가로 길이에 맞게 줄여야 하는 상황.
+                width = canvasWidth - RESIZE_BORDER;
+                height = width / bitmapRatio;
+            } else {
+                // 비트맵의 세로길이를 화면 세로 길이에 맞게 줄여야 하는 상황.
+                height = canvasHeight - RESIZE_BORDER;
+                width = height * bitmapRatio;
+            }
+        }
+        setWidth(width);
+        setHeight(height);
     }
 
-    private void initialize(String src) {
+    private void getBitmap(String src) {
         this.src = src;
         bitmap = BitmapFactory.decodeFile(src);
         if (bitmap == null) {
@@ -47,13 +67,17 @@ public class ImageData extends ElementData {
         }
     }
 
-    public void setSource(String newSrc) {
-        // 이전의 이미지 파일이 존재한다면 삭제.
+    private void removeImageFile() {
         File old = new File(this.src);
         if (old.exists()) {
             old.delete();
         }
-        initialize(newSrc);
+    }
+
+    public void setSource(String newSrc) {
+        // 이전의 이미지 파일이 존재한다면 삭제.
+        removeImageFile();
+        getBitmap(newSrc);
     }
 
     @Override
@@ -81,5 +105,11 @@ public class ImageData extends ElementData {
             System.err.println("TextData: Failed to generate JSON");
             return null;
         }
+    }
+
+    @Override
+    public void onRemove() {
+        super.onRemove();
+        removeImageFile();
     }
 }

@@ -38,7 +38,7 @@ public class TextData extends ElementData {
         }
     }
 
-    public TextData(String value, int fontSize, int fontColor) {
+    public TextData(String value, int fontSize, int fontColor, int canvasWidth) {
         super(0, 0, 0, 0);
         this.text = value;
         this.fontSize = fontSize;
@@ -49,9 +49,13 @@ public class TextData extends ElementData {
 
         Rect bound = new Rect();
         textPaint.getTextBounds(value, 0, value.length(), bound);
-
-        setWidth(bound.width() + RESIZE_BORDER * 2);
-        setHeight(bound.height());
+        if (canvasWidth < bound.width() + RESIZE_BORDER * 2) {
+            setWidth(canvasWidth - RESIZE_BORDER * 2);
+            setHeight(bound.height() * (float)Math.ceil((float)bound.width() / canvasWidth));
+        } else {
+            setWidth(bound.width());
+            setHeight(bound.height());
+        }
     }
 
     private void generateTextLayout() {

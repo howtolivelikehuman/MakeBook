@@ -161,7 +161,7 @@ public class EditBookActivity  extends PageActivity {
                         Toast.makeText(getApplicationContext(), "내용이 없어 글이 추가되지 않았습니다.", Toast.LENGTH_SHORT).show();
                     } else {
                         if (requestCode == Constant.ADD_TEXT_REQUEST) {
-                            current.addText(value, fontSize, fontColor);
+                            current.addText(value, fontSize, fontColor, flipper.getCurrentView().getWidth());
                         } else {
                             editingText.setText(value);
                             editingText.setFontSize(fontSize);
@@ -187,7 +187,7 @@ public class EditBookActivity  extends PageActivity {
 
                         if (requestCode == Constant.ADD_IMAGE_REQUEST) {
                             Page current = pageList.get(page_idx);
-                            current.addImage(dest.getAbsolutePath());
+                            current.addImage(dest.getAbsolutePath(), flipper.getCurrentView().getWidth(), flipper.getCurrentView().getHeight());
                         } else {
                             editingImage.setSource(dest.getAbsolutePath());
                             editingImage = null;

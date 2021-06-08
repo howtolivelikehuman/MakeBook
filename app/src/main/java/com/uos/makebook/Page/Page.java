@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.DisplayMetrics;
 
 import com.uos.makebook.Common.DTO;
 import com.uos.makebook.Page.Element.ElementData;
@@ -236,18 +237,19 @@ public class Page implements DTO, Parcelable {
         return null;
     }
 
-    public void addText(String value, int fontSize, int fontColor) {
-        elements.add(new TextData(value, fontSize, fontColor));
+    public void addText(String value, int fontSize, int fontColor, int canvasWidth) {
+        elements.add(new TextData(value, fontSize, fontColor, canvasWidth));
         updateContents();
     }
 
-    public void addImage(String src) {
-        elements.add(new ImageData(src));
+    public void addImage(String src, int canvasWidth, int canvasHeight) {
+        elements.add(new ImageData(src, canvasWidth, canvasHeight));
         updateContents();
     }
 
     public void removeElement(ElementData element) {
         elements.remove(element);
+        element.onRemove();
         updateContents();
     }
 
