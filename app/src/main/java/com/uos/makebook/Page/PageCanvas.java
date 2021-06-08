@@ -2,6 +2,7 @@ package com.uos.makebook.Page;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,15 +15,19 @@ import android.widget.Toast;
 
 import com.uos.makebook.Page.Element.BorderKind;
 import com.uos.makebook.Page.Element.ElementData;
+import com.uos.makebook.Page.Element.ImageData;
+import com.uos.makebook.Page.Element.TextData;
 import com.uos.makebook.R;
+
+import org.w3c.dom.Text;
 
 import java.time.Duration;
 
-enum DragKind {
-    MOVE, RESIZE
-}
-
 public class PageCanvas extends View {
+    enum DragKind {
+        MOVE, RESIZE
+    }
+
     private Page page;
     private ElementData currentSelected = null;
     private float downX, downY;
@@ -65,7 +70,6 @@ public class PageCanvas extends View {
                 case 0:
 
                     break;
-
                 case 1:
                     showDeletionDialog(context, element);
                     break;
@@ -76,7 +80,25 @@ public class PageCanvas extends View {
     }
 
     private void showDeletionDialog(Context context, ElementData element) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
+        builder.setTitle("정말 삭제할까요?");
+        if (element instanceof TextData) {
+            builder.setMessage("선택한 텍스트를 정말 삭제할까요?");
+        } else if (element instanceof ImageData) {
+            builder.setMessage("선택한 이미지를 정말 삭제할까요?");
+        } else {
+            builder.setMessage("선택한 객체를 정말 삭제할까요?");
+        }
+
+        builder.setPositiveButton("예", (dialog, which) -> {
+            page.removeElement(element);
+            this.invalidate();
+        });
+        builder.setNegativeButton("아니요", null);
+
+        builder.setCancelable(true);
+        builder.show();
     }
 
     @Override

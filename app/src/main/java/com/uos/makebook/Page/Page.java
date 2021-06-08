@@ -246,6 +246,11 @@ public class Page implements DTO, Parcelable {
         updateContents();
     }
 
+    public void removeElement(ElementData element) {
+        elements.remove(element);
+        updateContents();
+    }
+
     public void setPageUpdateEventListener(PageUpdateEventListener listener) {
         pageUpdateEventListener = listener;
     }
