@@ -16,6 +16,7 @@ import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.MainList.Book;
 import com.uos.makebook.Common.Constant;
+import com.uos.makebook.MainList.BookListActivity;
 import com.uos.makebook.R;
 
 import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
@@ -55,7 +56,6 @@ public class ViewPageListActivity extends AppCompatActivity {
         book_id = book.getId();
         book_name = book.getTitle();
 
-
         // DB로부터 값 받아오기 -> pageList에 넣기
         setPageList();
 
@@ -85,7 +85,7 @@ public class ViewPageListActivity extends AppCompatActivity {
                     intent.putExtra("list_idx", book.getListIdx());
                     intent.putExtra("book", book);
 
-                    startActivityForResult(intent, Constant.READ_REQUEST);
+                    startActivity(intent);
                 }
                 else if(mode.equals("EDIT_MODE")){
                     Intent intent = new Intent(getApplicationContext(), EditBookActivity.class);
@@ -93,14 +93,23 @@ public class ViewPageListActivity extends AppCompatActivity {
 
                     intent.putExtra("list_idx", book.getListIdx());
                     intent.putExtra("book", book);
-                    startActivityForResult(intent, Constant.EDIT_REQUEST);
-                    finish();
+                    startActivity(intent);
                 }
+                finish();
             }
         });
 
         recyclerView.setAdapter(pagelistAdapter);
 
+    }
+
+    @Override
+    public void onBackPressed(){
+        if(mode.equals("EDIT_MODE")){
+            Intent intent = new Intent(getApplicationContext(), BookListActivity.class);
+            startActivity(intent);
+        }
+        super.onBackPressed();
     }
 
 

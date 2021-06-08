@@ -18,6 +18,12 @@
         android:title="완료"
         app:showAsAction="always"
     />
+    <item
+        android:id="@+id/action_view_pagelist"
+        android:title="페이지 모아보기"
+        android:icon="@drawable/pagelist"
+        app:showAsAction="always"
+        />
     <group android:id="@+id/group_play">
         <item
             android:id="@+id/action_create_prev"

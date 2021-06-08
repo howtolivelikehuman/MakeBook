@@ -1,6 +1,7 @@
 package com.uos.makebook.Page;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.media.MediaPlayer;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.uos.makebook.Common.Constant;
+import com.uos.makebook.MainList.BookListActivity;
 import com.uos.makebook.R;
 
 import java.io.File;
@@ -234,6 +237,15 @@ public class ReadBookActivity extends PageActivity {
                 }else{
                     playRecord(-1);
                 }
+                return true;
+            case R.id.viewPagelist :
+                // 페이지 모아보기
+                Intent tmpIntent = new Intent(getApplicationContext(), ViewPageListActivity.class);
+                book.setCover(null);
+                tmpIntent.putExtra("book",book);
+                tmpIntent.putExtra("mode", "READ_MODE");
+                startActivity(tmpIntent);
+                finish();
                 return true;
             case R.id.playAll :
                 // 전체 페이지 재생
