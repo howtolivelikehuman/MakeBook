@@ -36,13 +36,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import static com.uos.makebook.Common.Constant.EDIT_REQUEST;
+
 public class EditBookActivity  extends PageActivity {
     private TextData editingText = null;
     private ImageData editingImage = null;
+    private int isCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isCreated = getIntent().getIntExtra("code",-1);
     }
 
     @Override
@@ -63,6 +67,7 @@ public class EditBookActivity  extends PageActivity {
     @Override
     public void complete(){
         super.complete();
+        startActivity(new Intent(getApplicationContext(), BookListActivity.class));
         finish();
         //종료하지 말고 그냥 디비에 수정된 페이지 반영하고 flipper는 계속 떠있도록 하고, 뒤로가기 하면 페이지모아보기 뜨도록 하면 좋을 것 같은데 어떤가요?(다현)
     }

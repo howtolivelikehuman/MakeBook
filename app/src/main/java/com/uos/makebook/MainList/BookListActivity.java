@@ -296,8 +296,6 @@ public class BookListActivity extends AppCompatActivity{
                 //성공
                 if (resultCode == Constant.MAKECOVER_RESULT_SUCCESS) {
                     Toast.makeText(getApplicationContext(), "표지 설정에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
-                    refresh();
-                    return;
                 }
                 break;
 
@@ -308,7 +306,7 @@ public class BookListActivity extends AppCompatActivity{
             case Constant.EDIT_REQUEST:
                 break;
         }
-
+        refresh();
     }
 
         @Override
@@ -325,6 +323,7 @@ public class BookListActivity extends AppCompatActivity{
             case R.id.action_create2:
                 Toast.makeText(getApplicationContext(), "책 만들기를 시작합니다", Toast.LENGTH_LONG).show();
                 Intent nextIntent = new Intent(getApplicationContext(), MakeCoverActivity.class);
+                nextIntent.putExtra("create",1);
                 //startActivityForResult(nextIntent, Constant.MAKECOVER_REQUEST);
                 startActivity(nextIntent);
                 finish();
