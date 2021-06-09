@@ -34,7 +34,7 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
     // Item을 하나 하나 보여주는(bind 되는) 함수
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Page item = pageItems.get(position);
-        holder.setItem(item);
+        holder.setItem(item, position);
     }
 
     @Override
@@ -76,6 +76,7 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         ImageView pageView;
+        TextView pageNum;
         //private ImageView page_image; //페이지 이미지
 
         public ViewHolder(@NonNull View itemView) {
@@ -95,15 +96,17 @@ public class PageListAdapter extends RecyclerView.Adapter<PageListAdapter.ViewHo
             });
 
             pageView = itemView.findViewById(R.id.pageView);
+            pageNum = itemView.findViewById(R.id.textNum);
         }
 
         //pageItem 구성
-        public void setItem(Page item){
+        public void setItem(Page item, int position){
             Bitmap pageBitmap = Bitmap.createBitmap(screenSize.widthPixels, screenSize.heightPixels, Bitmap.Config.ARGB_8888);
             Canvas pageCanvas = new Canvas(pageBitmap);
             item.drawElements(pageCanvas);
 
             pageView.setImageBitmap(pageBitmap);
+            pageNum.setText(Integer.toString(position+1));
         }
     }
 }
