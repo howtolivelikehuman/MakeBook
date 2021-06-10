@@ -181,7 +181,7 @@
             android:backgroundTint="@null"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="6dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="저장" />
 
@@ -195,7 +195,7 @@
             android:backgroundTint="@null"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="비우기" />
 
@@ -209,7 +209,7 @@
             android:backgroundTint="@null"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="돌아가기" />
 
@@ -223,7 +223,7 @@
             android:backgroundTint="@null"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="12dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="기본 표지" />
 

@@ -38,50 +38,50 @@
         android:layout_gravity="center_horizontal"
         android:padding="3dp"
         android:layout_weight="1"
-        android:layout_height="8dp">
+        android:layout_height="12dp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_previous"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="#2E2E2E"
-            android:background="@drawable/yellow_btn_round"
+            android:background="@drawable/yellow_btn"
             android:backgroundTint="@null"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="이전"
             />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_complete"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="#2E2E2E"
-            android:background="@drawable/blue_btn_round"
+            android:background="@drawable/blue_btn"
             android:backgroundTint="@null"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="13dp"
             android:layout_marginTop="12dp"
             android:text="완료"
              />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_next"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="#2E2E2E"
-            android:background="@drawable/yellow_btn_round"
+            android:background="@drawable/yellow_btn"
             android:backgroundTint="@null"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="13dp"
             android:text="다음"
             />
     </LinearLayout>
