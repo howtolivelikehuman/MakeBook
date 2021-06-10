@@ -339,4 +339,9 @@ public class ReadBookActivity extends PageActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected PageCanvas generatePageCanvas(Page page) {
+        return new PageCanvas(this, page, false);
+    }
 }

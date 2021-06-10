@@ -130,6 +130,11 @@ public class EditBookActivity  extends PageActivity {
         }
     }
 
+    @Override
+    protected PageCanvas generatePageCanvas(Page page) {
+        return new PageCanvas(this, page, true);
+    }
+
     // 이미 있는 텍스트 객체의 내용을 수정.
     // PageCanvas에서 호출하며, 내부적으로 AddTextActivity를 사용한다는 점에서
     // 텍스트를 새로 추가하는 과정과 동일.
