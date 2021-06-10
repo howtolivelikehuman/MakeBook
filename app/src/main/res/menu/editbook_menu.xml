@@ -24,12 +24,11 @@
             />
         <item
             android:id="@+id/action_delete"
-            android:title="페이지 삭제"
+            android:title="현재 페이지 삭제"
             />
         <item
             android:id="@+id/action_view_pagelist"
             android:title="페이지 모아보기"
-            android:icon="@drawable/pagelist"
             />
     </group>
 </menu>

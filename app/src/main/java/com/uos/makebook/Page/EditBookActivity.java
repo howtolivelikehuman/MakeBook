@@ -69,7 +69,6 @@ public class EditBookActivity  extends PageActivity {
         super.complete();
         startActivity(new Intent(getApplicationContext(), BookListActivity.class));
         finish();
-        //종료하지 말고 그냥 디비에 수정된 페이지 반영하고 flipper는 계속 떠있도록 하고, 뒤로가기 하면 페이지모아보기 뜨도록 하면 좋을 것 같은데 어떤가요?(다현)
     }
   
     @Override

@@ -270,7 +270,7 @@ public class MakeCoverActivity extends AppCompatActivity {
                     }
                 })
         .setColumns(5)
-        .setTitle("색 고르기")
+        .setTitle("펜 색상 선택")
         .setDefaultColorButton(Color.BLACK)
         .setRoundColorButton(true);
     }

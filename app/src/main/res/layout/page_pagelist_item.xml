@@ -15,6 +15,15 @@
         android:orientation="vertical"
         android:gravity="center"
         >
+        <!--상단 앱바(툴바)-->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:layout_below="@+id/button_menu"
+            android:minHeight="?attr/actionBarSize">
+        </androidx.appcompat.widget.Toolbar>
 
         <ImageView
             android:id="@+id/pageView"

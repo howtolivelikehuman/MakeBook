@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.pdf.PdfDocument;
 import android.os.Build;
@@ -71,6 +72,10 @@ public class BookListActivity extends AppCompatActivity{
     PopupMenu popUp;
     AlertDialog finalAsk;
 
+    // 마지막으로 뒤로가기 버튼을 눌렀던 시간 저장
+    private long backBtnTime = 0;
+    private Toast toast;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +133,21 @@ public class BookListActivity extends AppCompatActivity{
         //DB에서 데이터 받아오기
         bookAdapter.setItems(bookDB.selectAll());
         recyclerView.setAdapter(bookAdapter);
+    }
+
+    //2초안에 뒤로가기 두 번 눌러야 앱 종료
+    @Override
+    public void onBackPressed() {
+        long curTime = System.currentTimeMillis();
+        long gapTime = curTime - backBtnTime;
+
+        if(0 <= gapTime && 2000 >= gapTime) {
+            super.onBackPressed();
+        }
+        else {
+            backBtnTime = curTime;
+            Toast.makeText(this, "한 번 더 누르면 종료됩니다.",Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void refresh(){
@@ -265,25 +285,36 @@ public class BookListActivity extends AppCompatActivity{
     public void onDeleteFinalAsk(long bookId){
         AlertDialog.Builder builder = new AlertDialog.Builder(BookListActivity.this);
         builder.setMessage("책을 삭제한 뒤엔 복구할 수 없습니다. \n삭제하시겠습니까?");
-        builder.setPositiveButton("네", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int id)
             {
                 bookDB.delete(bookId);
                 Toast.makeText(getApplicationContext(), "책 삭제를 완료하였습니다.", Toast.LENGTH_LONG).show();
                 refresh();
-                finalAsk.dismiss();
+                //finalAsk.dismiss();
             }
         });
-        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener(){
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int id)
             {
-                finalAsk.dismiss();
+                //finalAsk.dismiss();
             }
         });
-        finalAsk = builder.create();
-        finalAsk.show();
+
+
+        final AlertDialog dialog = builder.create();
+        dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#3181F7"));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#3181F7"));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(Color.WHITE);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setBackgroundColor(Color.WHITE);
+            }
+        });
+        dialog.show();
     }
 
     @Override

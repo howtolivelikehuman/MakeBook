@@ -5,12 +5,6 @@
 
 
     <item
-        android:id="@+id/action_create1"
-        android:title="만들기 →"
-        app:showAsAction="withText|always"
-        android:checkable="false"/>
-
-    <item
         android:id="@+id/action_create2"
         android:title="책 만들기"
         android:icon="@drawable/make_icon"

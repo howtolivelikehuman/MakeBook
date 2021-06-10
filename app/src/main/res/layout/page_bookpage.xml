@@ -11,7 +11,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/background_light"
+        android:background="@drawable/toolbar_layout"
         android:minHeight="?attr/actionBarSize">
     </androidx.appcompat.widget.Toolbar>
 
@@ -38,29 +38,52 @@
         android:layout_gravity="center_horizontal"
         android:padding="3dp"
         android:layout_weight="1"
-        android:layout_height="0dp">
-        <Button android:id="@+id/btn_previous"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="이전 페이지"
-            android:enabled="false"
-            android:textSize="12sp"/>
+        android:layout_height="8dp">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_previous"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:textColor="#2E2E2E"
+            android:background="@drawable/yellow_btn_round"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
+            android:text="이전"
+            />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_complete"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:textSize="12sp"
-            android:text="완료" />
+            android:textColor="#2E2E2E"
+            android:background="@drawable/blue_btn_round"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
+            android:text="완료"
+             />
 
-        <Button android:id="@+id/btn_next"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_next"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
-            android:text="다음 페이지"
-            android:textSize="12sp"/>
+            android:textColor="#2E2E2E"
+            android:background="@drawable/yellow_btn_round"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="12dp"
+            android:text="다음"
+            />
     </LinearLayout>
 
 </LinearLayout>
