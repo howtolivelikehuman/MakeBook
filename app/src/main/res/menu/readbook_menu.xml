@@ -16,11 +16,11 @@
     <group android:id="@+id/group_play">
         <item
             android:id="@+id/playAll"
-            android:title="전체 페이지 재생하기"
+            android:title="전체 페이지 재생"
             />
         <item
             android:id="@+id/deleteThis"
-            android:title="해당 페이지 녹음 삭제"
+            android:title="현재 페이지 녹음 삭제"
             />
         <item
             android:id="@+id/deleteAll"
@@ -29,7 +29,6 @@
         <item
             android:id="@+id/action_view_pagelist"
             android:title="페이지 모아보기"
-            android:icon="@drawable/pagelist"
             />
     </group>
 </menu>

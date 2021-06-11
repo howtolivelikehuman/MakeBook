@@ -27,8 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="5dp"
-                
+                android:layout_marginLeft="9dp"
                 android:text="제목 : " />
 
             <EditText
@@ -36,6 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginRight="9dp"
                 android:ems="10"
                 android:gravity="center_vertical"
                 android:hint="제목을 입력해 주세요"
@@ -50,17 +50,21 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/cover_btn_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="9dp"
+                android:textColor="#2E2E2E"
+                android:background="@drawable/yellow_btn"
+                android:backgroundTint="@null"
                 android:text="색상" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="5dp"
+                android:layout_marginLeft="9dp"
                 
                 android:text="작가 : "
                 android:textSize="18sp" />
@@ -86,8 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="5dp"
-                
+                android:layout_marginLeft="9dp"
                 android:text="지우개"
                 android:textSize="18sp" />
 
@@ -113,6 +116,7 @@
                     android:id="@+id/cover_erase_big"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:text="大" />
             </RadioGroup>
 
@@ -126,8 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    
+                    android:layout_marginLeft="10dp"
                     android:text="굵기"
                     android:textSize="18sp" />
 
@@ -168,33 +171,63 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cover_btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#2E2E2E"
+            android:background="@drawable/blue_btn"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="12dp"
             android:text="저장" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cover_btn_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#2E2E2E"
+            android:background="@drawable/blue_btn"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="12dp"
             android:text="비우기" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cover_btn_exit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#2E2E2E"
+            android:background="@drawable/blue_btn"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="12dp"
             android:text="돌아가기" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/cover_btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textColor="#2E2E2E"
+            android:background="@drawable/blue_btn"
+            android:backgroundTint="@null"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginBottom="13dp"
+            android:layout_marginTop="12dp"
             android:text="기본 표지" />
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

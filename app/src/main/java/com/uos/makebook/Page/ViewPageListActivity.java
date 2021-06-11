@@ -1,9 +1,11 @@
 package com.uos.makebook.Page;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 
@@ -15,17 +17,15 @@ import android.view.View;
 import com.uos.makebook.Common.DB;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.MainList.Book;
-import com.uos.makebook.Common.Constant;
 import com.uos.makebook.MainList.BookListActivity;
 import com.uos.makebook.R;
-
-import static com.uos.makebook.Common.Constant.COLUMN_PAGE;
 
 
 public class ViewPageListActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     PageListAdapter pagelistAdapter = new PageListAdapter();
+    Toolbar toolbar;
 
     //book
     Book book;
@@ -58,6 +58,11 @@ public class ViewPageListActivity extends AppCompatActivity {
 
         // DB로부터 값 받아오기 -> pageList에 넣기
         pageList = PageMethod.setPageList(pageDB, book_id);
+
+        //툴바 설정
+        toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(book_name);
 
         recyclerView = findViewById(R.id.recyPagelist);
         GridLayoutManager layoutManager = new GridLayoutManager(this,3);

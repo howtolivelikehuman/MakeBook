@@ -15,7 +15,7 @@
         android:padding="10dp"
         android:text="완료"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="#3181F7"
         android:textSize="15sp" />
 
     <TextView
@@ -27,7 +27,7 @@
         android:padding="10dp"
         android:text="색상"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="#3181F7"
         android:textSize="15sp"
         android:layout_toStartOf="@id/add_text_done"
         />
@@ -37,13 +37,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/add_text_color"
+        android:layout_marginTop="0dp"
+        android:layout_toStartOf="@id/add_text_color"
         android:padding="10dp"
         android:text="크기"
         android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        android:layout_toStartOf="@id/add_text_color"
-        />
+        android:textColor="#3181F7"
+        android:textSize="15sp" />
 
     <EditText
         android:id="@+id/add_text_edit_text"

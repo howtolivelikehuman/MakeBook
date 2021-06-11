@@ -77,7 +77,7 @@ public class AddTextActivity extends AppCompatActivity {
             });
 
             colorPicker.setColumns(5);
-            colorPicker.setTitle("글자 색 고르기");
+            colorPicker.setTitle("글씨 색 선택");
             colorPicker.setDefaultColorButton(textColor);
             colorPicker.setRoundColorButton(true);
             colorPicker.show();
@@ -92,13 +92,22 @@ public class AddTextActivity extends AppCompatActivity {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setView(picker);
-            builder.setTitle("글자 크기 선택");
+            builder.setTitle("글씨 크기 선택");
             builder.setPositiveButton("OK", (dialog, which) -> {
                 textSize = picker.getValue();
                 editText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
             });
             builder.setNegativeButton("CANCEL", (dialog, which) -> { });
-            builder.create().show();
+
+            final AlertDialog dialog = builder.create();
+            dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#3181F7"));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.parseColor("#3181F7"));
+                }
+            });
+            dialog.show();
         });
     }
 }
