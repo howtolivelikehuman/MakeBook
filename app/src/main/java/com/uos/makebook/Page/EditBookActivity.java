@@ -18,6 +18,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 import com.uos.makebook.Common.PageDB;
 import com.uos.makebook.Common.Constant;
 import com.uos.makebook.Page.Element.ImageData;
@@ -39,9 +42,20 @@ import java.nio.file.StandardCopyOption;
 import static com.uos.makebook.Common.Constant.EDIT_REQUEST;
 
 public class EditBookActivity  extends PageActivity {
+    class ImageRequest {
+        public final int request;
+        public final String fileName;
+
+        public ImageRequest(int req, String name) {
+            request = req;
+            fileName = name;
+        }
+    }
+
     private TextData editingText = null;
     private ImageData editingImage = null;
     private int isCreated;
+    private ImageRequest recentImageRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +100,7 @@ public class EditBookActivity  extends PageActivity {
                 intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
+                intent.putExtra("crop", true);
                 startActivityForResult(Intent.createChooser(intent, "이미지 선택"), Constant.ADD_IMAGE_REQUEST);
                 return true;
             case R.id.action_view_pagelist :
@@ -129,6 +144,11 @@ public class EditBookActivity  extends PageActivity {
         }
     }
 
+    @Override
+    protected PageCanvas generatePageCanvas(Page page) {
+        return new PageCanvas(this, page, true);
+    }
+
     // 이미 있는 텍스트 객체의 내용을 수정.
     // PageCanvas에서 호출하며, 내부적으로 AddTextActivity를 사용한다는 점에서
     // 텍스트를 새로 추가하는 과정과 동일.
@@ -147,6 +167,7 @@ public class EditBookActivity  extends PageActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
+        intent.putExtra("crop", true);
 
         editingImage = imageData;
         startActivityForResult(Intent.createChooser(intent, "이미지 선택"), Constant.EDIT_IMAGE_REQUEST);
@@ -191,13 +212,24 @@ public class EditBookActivity  extends PageActivity {
             case Constant.EDIT_IMAGE_REQUEST:
                 Uri uri = data.getData();
                 if (uri != null) {
-                    String name = getFileNameFromUri(uri);
-                    File dest = generateInternalFile(name + getRandomString(10));
+                    CropImage.activity(uri).setGuidelines(CropImageView.Guidelines.ON)
+                            .setCropShape(CropImageView.CropShape.RECTANGLE)
+                            .start(this);
+                    recentImageRequest = new ImageRequest(requestCode, getFileNameFromUri(uri));
+                }
+                break;
+
+            case CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE:
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+
+                if (resultCode == Activity.RESULT_OK && result.getUri() != null && recentImageRequest != null) {
+                    File dest = generateInternalFile(recentImageRequest.fileName + getRandomString(10));
+
                     try (FileOutputStream out = new FileOutputStream(dest)) {
-                        Bitmap bitmap = getBitmapFromUri(uri);
+                        Bitmap bitmap = getBitmapFromUri(result.getUri());
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
 
-                        if (requestCode == Constant.ADD_IMAGE_REQUEST) {
+                        if (recentImageRequest.request == Constant.ADD_IMAGE_REQUEST) {
                             Page current = pageList.get(page_idx);
                             current.addImage(dest.getAbsolutePath(), flipper.getCurrentView().getWidth(), flipper.getCurrentView().getHeight());
                         } else {
@@ -212,7 +244,6 @@ public class EditBookActivity  extends PageActivity {
                 } else {
                     System.err.println("EditBookActivity: Failed to add image.");
                 }
-                break;
         }
     }
 

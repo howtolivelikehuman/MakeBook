@@ -35,6 +35,9 @@
         <activity android:name=".Page.ReadBookActivity"/>
         <activity android:name=".Page.AddTextActivity"/>
         <activity android:name=".Page.ViewPageListActivity"/>
+
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
     </application>
 
 </manifest>

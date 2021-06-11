@@ -193,7 +193,7 @@ public class PageActivity extends AppCompatActivity {
         flipper.removeAllViews();
         for(int i=0; i<pageList.size(); i++){
             Page currentPage = pageList.get(i);
-            flipper.addView(new PageCanvas(this, currentPage));
+            flipper.addView(generatePageCanvas(currentPage));
         };
 
         for(int i=0; i<page_idx; i++) { // 원래 보던 위치로 되돌려놓기
@@ -201,6 +201,12 @@ public class PageActivity extends AppCompatActivity {
         }
     }
 
+    // makeFlipperByPageList 함수에서 필요한 PageCanvas를 생성해서 반환.
+    // 파생 클래스인 EditBookActivity와 ReadBookActivity는 이 함수를
+    // override하여 isEditable 인자를 적절히 설정해야 함.
+    protected PageCanvas generatePageCanvas(Page page) {
+        return new PageCanvas(this, page, false);
+    }
 
     public void addPageBeforeIdx(){ // 이전 페이지 추가
         System.out.println("EditBookActivity.addPageBeforeIdx");

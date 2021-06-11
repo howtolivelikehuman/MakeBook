@@ -36,6 +36,7 @@ public class PageCanvas extends View {
     private float dx, dy;
     private DragKind dragKind;
     private BorderKind borderKind;
+    private boolean isEditable;
 
     // 아래 변수는 Long Click(0.5초 이상 꾹 누르고 있는 동작)을 감지하기 위해 사용됨.
     // down 이벤트가 발생하면 Handler에 0.5초 뒤 onLongClick을 실행하도록 예약하고,
@@ -48,9 +49,10 @@ public class PageCanvas extends View {
     private int currCount = 0;
     private int downCount = -1;
 
-    public PageCanvas(Context context, Page page) {
+    public PageCanvas(Context context, Page page, boolean isEditable) {
         super(context);
         this.page = page;
+        this.isEditable = isEditable;
 
         setBackgroundColor(Color.TRANSPARENT);
 
@@ -132,6 +134,10 @@ public class PageCanvas extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isEditable) {
+            return false;
+        }
+
         boolean used = true;
         float x = event.getX();
         float y = event.getY();
