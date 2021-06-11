@@ -1,6 +1,7 @@
 package com.uos.makebook.Page;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -268,7 +269,6 @@ public class PageActivity extends AppCompatActivity {
     }
 
     public void updateButtonState(){
-        System.out.println("updateButtonState");
         // 이전, 다음 버튼 상태 update
         int page_number = pageList.size();
         if(page_number == 0 || page_number == 1) {
@@ -280,14 +280,18 @@ public class PageActivity extends AppCompatActivity {
         if(page_idx == page_number-1){
             // 마지막 페이지이면 다음 버튼 비활성화
             next_button.setEnabled(false);
+            next_button.setBackgroundResource(R.drawable.diable_btn);
         }else{
             next_button.setEnabled(true);
+            next_button.setBackgroundResource(R.drawable.yellow_btn);
         }
 
         if(page_idx == 0){
             prev_button.setEnabled(false);
+            prev_button.setBackgroundResource(R.drawable.diable_btn);
         }else{
             prev_button.setEnabled(true);
+            prev_button.setBackgroundResource(R.drawable.yellow_btn);
         }
     }
 }
