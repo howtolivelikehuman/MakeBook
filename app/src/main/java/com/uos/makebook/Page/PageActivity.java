@@ -271,9 +271,12 @@ public class PageActivity extends AppCompatActivity {
     public void updateButtonState(){
         // 이전, 다음 버튼 상태 update
         int page_number = pageList.size();
+        System.out.println(page_number);
         if(page_number == 0 || page_number == 1) {
             next_button.setEnabled(false);
+            next_button.setBackgroundResource(R.drawable.diable_btn);
             prev_button.setEnabled(false);
+            prev_button.setBackgroundResource(R.drawable.diable_btn);
             return;
         }
 
