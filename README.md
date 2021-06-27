@@ -1,17 +1,29 @@
 # MakeBook
 책 만들기 어플리케이션
 
+## 기능
+● 내가 원하는 E북 만들기
 
-## 명명규칙
+● 원하는 표지를 그려서 만들기
 
-#### JAVA파일
-* Activity 파일은 끝에 Activity 붙여주기
+● 직접 글을 작성하고, 이미지를 삽입하기
+
+● 원하는 페이지를 직접 읽어 녹음하기
+
+● 내가 만든 책들을 한 눈에 확인하기
+
+● 만든 책을 PDF 문서로 변환하기 
+
+## 화면
+![image](https://user-images.githubusercontent.com/63439738/123532968-c22ac000-d74c-11eb-9853-c05a47ea1410.png)
+![image](https://user-images.githubusercontent.com/63439738/123533001-f43c2200-d74c-11eb-94ce-251128a6d344.png)
+![image](https://user-images.githubusercontent.com/63439738/123533005-fb633000-d74c-11eb-958d-022bf6fcd22e.png)
+![image](https://user-images.githubusercontent.com/63439738/123533015-0fa72d00-d74d-11eb-93b6-ff1592dfb5b1.png)
+![image](https://user-images.githubusercontent.com/63439738/123533019-133ab400-d74d-11eb-9afb-62ee0bb5b518.png)
+![image](https://user-images.githubusercontent.com/63439738/123533026-1c2b8580-d74d-11eb-8b12-7ea6ef986976.png)
 
 
-#### xml layout
-* layout안에 폴더를 만들 수가 없어서 이름을 잘 정해주셔야 합니다!
-* 사용될 패키지명 _ 액티비티명 _ (기능/용도) 으로 해주시면 좋을거 같습니다!
 
 
-#### Gradle
-* dependecny 추가시 주석으로 무슨 용도인지는 적어주세요!
+
+
