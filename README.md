@@ -23,13 +23,9 @@
 ![image](https://user-images.githubusercontent.com/63439738/123533019-133ab400-d74d-11eb-9afb-62ee0bb5b518.png)
 ![image](https://user-images.githubusercontent.com/63439738/123533026-1c2b8580-d74d-11eb-8b12-7ea6ef986976.png)
 
+## 동작
 ![draw](https://user-images.githubusercontent.com/63439738/123551103-53308400-d7ab-11eb-8362-f1e8806da2fd.gif)
-
 ![image upload](https://user-images.githubusercontent.com/63439738/123551100-50ce2a00-d7ab-11eb-925b-106ad643542b.gif)
-
-
-
-
 
 
 
